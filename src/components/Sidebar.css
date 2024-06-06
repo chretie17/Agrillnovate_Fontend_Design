@@ -1,231 +1,173 @@
 .sidebar {
-  width: 220px;
-  background-color: #fff;
-  padding: 10px;
+  width: 250px;
   height: 100vh;
+  background-color: #2e7d32; /* Green background */
+  color: #ffffff; /* White text */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  left: 0;
-  top: 0;
+  position: fixed; /* Fixed position */
+  top: 0; /* Start at the top */
+  left: 0; /* Align to the left */
+  border-right: 1px solid #e0e0e0; /* Light gray border for a professional look */
+  z-index: 1000; /* Ensure it stays on top */
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-header {
+  padding: 20px;
+  background-color: #e8f5e9; /* Light green background for header */
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0; /* Light gray border for a professional look */
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.5em;
+  color: #2e7d32; /* Pure green */
 }
 
 .sidebar-list {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  margin: 0;
+  flex-grow: 1;
 }
 
 .sidebar-list li {
-  margin: 10px 0;
+  width: 100%;
 }
 
 .sidebar-list li a {
-  color: #000;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: #ffffff; /* White text */
   text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar-list li a:hover {
+  background-color: #003403; /* Darker green on hover */
+  color: #ffffff; /* White text */
+}
+
+.sidebar-list li a svg {
+  margin-right: 10px;
 }
 
 .sidebar-bottom {
+  padding: 10px;
+  border-top: 1px solid #e0e0e0; /* Light gray border for a professional look */
+  background-color: #e8f5e9; /* Light green background for footer */
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .notification-icon {
-  font-size: 24px;
-  color: #000;
+  cursor: pointer;
   margin-bottom: 10px;
+  color: #2e7d32; /* Pure green */
+}
+
+.notification-popup {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  width: 250px;
+  background-color: #ffffff; /* White background */
+  color: #2e7d32; /* Pure green */
+  border: 1px solid #e0e0e0; /* Light gray border for a professional look */
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.notification-popup ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-popup li {
+  padding: 5px 0;
+  border-bottom: 1px solid #e0e0e0; /* Light gray border */
+}
+
+.notification-popup li:last-child {
+  border-bottom: none;
 }
 
 .user-info {
   text-align: center;
-  margin-bottom: 10px;
+  color: #2e7d32; /* Pure green */
 }
 
-.logout-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.logout-button:hover {
-  background-color: #0056b3;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-
-  .sidebar ul {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .sidebar ul li {
-    text-align: center;
-  }
-
-  .sidebar .profile-section,
-  .sidebar .logout-section {
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    padding: 10px 0;
-  }
-}
-
-/* Main content Styles */
-.main-content {
-  margin-left: 220px; /* Adjust based on sidebar width + padding */
-  padding: 20px;
-}
-
-/* Notifications Popup Styles */
-.popup {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  width: 300px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-}
-
-.popup-content {
-  padding: 20px;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-/* Additional general styles */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.container {
-  max-width: 600px;
-  margin: 50px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  text-align: center;
-  color: #333;
-}
-
-/* Form styles */
-.form-group {
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  width: 100%;
-  margin-bottom: 5px;
-}
-
-.form-group input,
-.form-group select {
-  width: calc(50% - 10px);
-  margin-right: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.form-group input:last-child,
-.form-group select:last-child {
-  margin-right: 0;
-}
-
-.form-group input[type="email"] {
-  width: calc(100% - 10px);
-}
-
-.text-danger {
-  color: red;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #0056b3;
-}
-
-/* Login Form styles */
-.login-container {
-  max-width: 400px;
-  margin: 50px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.login-container h2 {
-  text-align: center;
-  color: #333;
-}
-
-.login-container .form-group {
-  margin-bottom: 15px;
-}
-
-.login-container .form-group label {
+.user-info span {
   display: block;
   margin-bottom: 5px;
 }
 
-.login-container .form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.user-info a {
+  color: #2e7d32; /* Pure green */
+  text-decoration: none;
 }
 
-.login-container .text-danger {
-  color: red;
-}
-
-.login-container button {
-  width: 100%;
-  padding: 10px;
-  background: #007bff;
-  color: white;
+.logout-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #c62828; /* Red for contrast */
+  color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.login-container button:hover {
-  background: #0056b3;
+.logout-button:hover {
+  background-color: #e53935; /* Lighter red */
+}
+
+/* Ensure main content does not go behind the sidebar */
+.main-content {
+  margin-left: 250px; /* Same as sidebar width */
+  padding: 20px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .toggle-button {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #2e7d32;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1100;
+  }
+}
+
+@media (min-width: 769px) {
+  .toggle-button {
+    display: none;
+  }
 }

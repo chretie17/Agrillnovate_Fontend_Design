@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/admin'; // Replace with your actual API URL
+const API_URL = 'http://localhost:8080/api/admin';
 
 // Set up the authorization token
 const setAuthToken = (token) => {
@@ -34,28 +34,49 @@ const deleteUser = async (id) => {
   await axios.delete(`${API_URL}/users/${id}`);
 };
 
-// Get all research
+// Research services
 const getResearch = async () => {
   const response = await axios.get(`${API_URL}/research`);
   return response.data;
 };
 
-// Create a new research
-const createResearch = async (research) => {
-  const response = await axios.post(`${API_URL}/research`, research);
+const createResearch = async (research, image) => {
+  const formData = new FormData();
+  formData.append('research', new Blob([JSON.stringify(research)], { type: 'application/json' }));
+  if (image) {
+    formData.append('image', image);
+  }
+  const response = await axios.post(`${API_URL}/research`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };
 
-// Update research
-const updateResearch = async (id, researchDetails) => {
-  const response = await axios.put(`${API_URL}/research/${id}`, researchDetails);
+const getResearchById = async (id) => {
+  const response = await axios.get(`${API_URL}/research/${id}`);
   return response.data;
 };
 
-// Delete research
+const updateResearch = async (id, researchDetails, image) => {
+  const formData = new FormData();
+  formData.append('research', new Blob([JSON.stringify(researchDetails)], { type: 'application/json' }));
+  if (image) {
+    formData.append('image', image);
+  }
+  const response = await axios.put(`${API_URL}/research/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
 const deleteResearch = async (id) => {
   await axios.delete(`${API_URL}/research/${id}`);
 };
+
 
 // Get all feedback
 const getFeedback = async () => {
@@ -134,6 +155,7 @@ export {
   deleteUser,
   getResearch,
   createResearch,
+  getResearchById,
   updateResearch,
   deleteResearch,
   getFeedback,

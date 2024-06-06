@@ -4,19 +4,24 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './Dashboard/Dashboard';
 import AdminDashboard from './admin/AdminDashboard';
 import ManageUsers from './admin/ManageUsers';
-import ManageResearch from './admin/ManageResearch';
+import ManageResearch from './admin/ResearchTables/ManageResearch';
 import ManageForums from './admin/ManageForums';
 import ManageFeedbacks from './admin/ManageFeedbacks';
-import ExpertDashboard from './Dashboard/ExpertDashboard';
+import ExpertDashboard from './expert/ExpertDashboard';
 import FarmerDashboard from './Dashboard/FarmerDashboard';
 import CommunityDashboard from './Dashboard/CommunityDashboard';
-import UserManagement from './userManagement/UserManagement';
 import ResearchManagement from './researchManagement/ResearchManagement';
 import Forum from './forum/forums';
 import NotificationsPopup from './components/NotificationsPopup';
 import Login from './auth/login';
 import Signup from './auth/Signup';
+import Homepage from './Homepage/home';
 import Feedback from './researchManagement/Feedback';
+import ManageMyResearch from './expert/ManagemyResearch'; 
+import ExpertAddResearch from './expert/AddResearch';
+import ExpertUpdateResearch from './expert/UpdateResearch';
+import AdminAddResearch from './admin/ResearchTables/AdminAddResearch';
+import AdminUpdateResearch from './admin/ResearchTables/AdminUpdateResearch';
 import { setAuthToken } from './services/api';
 
 const AppRouter = () => {
@@ -65,6 +70,7 @@ const AppRouter = () => {
           <Route path="/login" element={<Login setAuthenticated={setIsAuthenticated} setUserRole={setUserRole} />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/home" element={<Homepage />} />
           <Route path="/forum" element={<Forum />} />
           <Route path="/research" element={<ResearchManagement />} />
           {isAuthenticated ? (
@@ -76,15 +82,23 @@ const AppRouter = () => {
                   <Route path="/admin/manage-research" element={<ManageResearch />} />
                   <Route path="/admin/manage-forums" element={<ManageForums />} />
                   <Route path="/admin/manage-feedbacks" element={<ManageFeedbacks />} />
+                  <Route path="/admin/add-research" element={<AdminAddResearch />} />
+                  <Route path="/admin/update-research/:id" element={<AdminUpdateResearch />} />
                 </>
               )}
-              {userRole === 'ROLE_EXPERT' && <Route path="/expert-dashboard" element={<ExpertDashboard />} />}
+              {userRole === 'ROLE_EXPERT' && (
+                <>
+                  <Route path="/expert/add-research" element={<ExpertAddResearch />} />
+                  <Route path="/expert/update-research/:id" element={<ExpertUpdateResearch />} />
+                  <Route path="/expert-dashboard" element={<ExpertDashboard />} />
+                  <Route path="/expert/manage-my-research" element={<ManageMyResearch />} />
+                </>
+              )}
               {userRole === 'ROLE_FARMER' && <Route path="/farmer-dashboard" element={<FarmerDashboard />} />}
               {userRole === 'ROLE_COMMUNITYMEMBER' && <Route path="/community-dashboard" element={<CommunityDashboard />} />}
-              <Route path="/user-management" element={<UserManagement />} />
               <Route path="/notifications" element={<NotificationsPopup />} />
               <Route path="/feedback" element={<Feedback />} />
-              <Route path="*" element={<Navigate to="/dashboard" />} />
+              <Route path="*" element={<Navigate to="/home" />} />
             </>
           ) : (
             <Route path="*" element={<Navigate to="/login" />} />

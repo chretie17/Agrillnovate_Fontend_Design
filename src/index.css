@@ -312,3 +312,29 @@ body {
   font-weight: 500;
   margin-bottom: 10px;
 }
+/* styles.css */
+
+/* Ensure that the IconButtons are displayed inline */
+.MuiCardActions-root .MuiIconButton-root {
+  display: inline-block;
+}
+
+/* Add some padding or margin if needed */
+.MuiCardActions-root .MuiIconButton-root {
+  margin: 0 5px;
+}
+
+/* Ensure buttons are visible */
+.MuiIconButton-root {
+  visibility: visible;
+}
+
+/* styles.css */
+
+.MuiIconButton-root {
+  visibility: visible;
+}
+
+.MuiIconButton-root.colorError {
+  color: red;
+}
