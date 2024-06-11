@@ -6,6 +6,7 @@ import AdminDashboard from './admin/AdminDashboard';
 import ManageUsers from './admin/ManageUsers';
 import ManageResearch from './admin/ResearchTables/ManageResearch';
 import ManageForums from './admin/ManageForums';
+import Managenotifications from './admin/AdminNotifications'
 import ManageFeedbacks from './admin/ManageFeedbacks';
 import ExpertDashboard from './expert/ExpertDashboard';
 import FarmerDashboard from './Dashboard/FarmerDashboard';
@@ -16,11 +17,13 @@ import NotificationsPopup from './components/NotificationsPopup';
 import Login from './auth/login';
 import Signup from './auth/Signup';
 import Homepage from './Homepage/home';
+import ResearchDetail from './components/ResearchDetail';
 import Feedback from './researchManagement/Feedback';
-import ManageMyResearch from './expert/ManagemyResearch'; 
+import ManageMyResearch from './expert/ManagemyResearch';
 import ExpertAddResearch from './expert/AddResearch';
 import ExpertUpdateResearch from './expert/UpdateResearch';
 import AdminAddResearch from './admin/ResearchTables/AdminAddResearch';
+import AgriculturalResearch from './PublicPages/AgricultureResearchs';
 import AdminUpdateResearch from './admin/ResearchTables/AdminUpdateResearch';
 import { setAuthToken } from './services/api';
 
@@ -71,6 +74,9 @@ const AppRouter = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/home" element={<Homepage />} />
+          <Route path="/research/:id" element={<ResearchDetail />} />
+          <Route path="/agricultureresearch" element={<AgriculturalResearch />} />
+
           <Route path="/forum" element={<Forum />} />
           <Route path="/research" element={<ResearchManagement />} />
           {isAuthenticated ? (
@@ -82,6 +88,8 @@ const AppRouter = () => {
                   <Route path="/admin/manage-research" element={<ManageResearch />} />
                   <Route path="/admin/manage-forums" element={<ManageForums />} />
                   <Route path="/admin/manage-feedbacks" element={<ManageFeedbacks />} />
+                  <Route path="/admin/manage-notifications" element={<Managenotifications />} />
+
                   <Route path="/admin/add-research" element={<AdminAddResearch />} />
                   <Route path="/admin/update-research/:id" element={<AdminUpdateResearch />} />
                 </>

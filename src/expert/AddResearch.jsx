@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Container, TextField, Button, Box, Typography, Grid } from '@mui/material';
 import { createResearch } from '../services/ResearchService';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, StandaloneSearchBox } from '@react-google-maps/api';
 
 const mapContainerStyle = {
   width: '100%',
@@ -23,6 +23,7 @@ const AddResearch = () => {
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [location, setLocation] = useState(null);
+  const searchBoxRef = useRef(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -74,6 +75,19 @@ const AddResearch = () => {
       lng: event.latLng.lng(),
     });
   }, []);
+
+  const handlePlacesChanged = () => {
+    const places = searchBoxRef.current.getPlaces();
+    if (places.length === 0) return;
+
+    const place = places[0];
+    const location = {
+      lat: place.geometry.location.lat(),
+      lng: place.geometry.location.lng(),
+    };
+
+    setLocation(location);
+  };
 
   return (
     <Container maxWidth="md">
@@ -140,10 +154,34 @@ const AddResearch = () => {
         )}
         <Box mt={3}>
           <Typography variant="h6">Select Research Location</Typography>
-          <LoadScript googleMapsApiKey="AIzaSyCPO2R_AajcATH1GApK3CaJRSRL1Q92sd0">
+          <LoadScript googleMapsApiKey="AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg" libraries={['places']}>
+            <StandaloneSearchBox
+              onLoad={(ref) => (searchBoxRef.current = ref)}
+              onPlacesChanged={handlePlacesChanged}
+            >
+              <input
+                type="text"
+                placeholder="Search for places"
+                style={{
+                  boxSizing: `border-box`,
+                  border: `1px solid transparent`,
+                  width: `240px`,
+                  height: `32px`,
+                  padding: `0 12px`,
+                  borderRadius: `3px`,
+                  boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+                  fontSize: `14px`,
+                  outline: `none`,
+                  textOverflow: `ellipses`,
+                  position: "absolute",
+                  left: "50%",
+                  marginLeft: "-120px"
+                }}
+              />
+            </StandaloneSearchBox>
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
-              center={initialCenter}
+              center={location || initialCenter}
               zoom={8}
               onClick={handleMapClick}
             >

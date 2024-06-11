@@ -18,10 +18,12 @@ import {
   TableRow,
   Paper,
   Tooltip,
+  TablePagination,
 } from '@mui/material';
 import { Delete, Edit, Info } from '@mui/icons-material';
 import AddResearch from './AdminAddResearch';
 import AdminUpdateResearch from './AdminUpdateResearch';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
 const ManageResearch = () => {
   const [research, setResearch] = useState([]);
@@ -31,6 +33,12 @@ const ManageResearch = () => {
   const [selectedResearch, setSelectedResearch] = useState(null);
   const [contentDialogOpen, setContentDialogOpen] = useState(false);
   const [fullContent, setFullContent] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg',
+  });
 
   useEffect(() => {
     fetchResearch();
@@ -92,6 +100,15 @@ const ManageResearch = () => {
     return content.length > length ? content.substring(0, length) + '...' : content;
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   return (
     <Container sx={{ marginTop: 4 }}>
       <Typography variant="h4" component="h1" sx={{ marginBottom: 4, textAlign: 'center' }}>
@@ -106,37 +123,62 @@ const ManageResearch = () => {
         Add Research
       </Button>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="research table">
+        <Table sx={{ minWidth: 650, border: '1px solid #e0e0e0' }} aria-label="research table">
           <TableHead>
             <TableRow>
+              <TableCell>Image</TableCell>
               <TableCell>Title</TableCell>
               <TableCell>Author</TableCell>
               <TableCell>Content</TableCell>
+              <TableCell>Location</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {research.map((item) => (
+            {research.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item) => (
               <TableRow key={item.researchID}>
+                <TableCell>
+                  {item.images && item.images.length > 0 && (
+                    <img
+                      src={`data:image/jpeg;base64,${item.images[0].image}`}
+                      alt="Research"
+                      style={{ width: '100px', height: 'auto', borderRadius: '4px', border: '1px solid #e0e0e0' }}
+                    />
+                  )}
+                </TableCell>
                 <TableCell component="th" scope="row">
                   {item.title}
                 </TableCell>
                 <TableCell>{item.author}</TableCell>
                 <TableCell>
                   <Tooltip title={item.content}>
-                    <span onClick={() => handleContentClick(item.content)}>
-                      {truncateContent(item.content, 100)}
-                      <IconButton size="small" color="info">
+                    <span>
+                      {truncateContent(item.content, 50)}
+                      <IconButton size="small" color="info" onClick={() => handleContentClick(item.content)}>
                         <Info />
                       </IconButton>
                     </span>
                   </Tooltip>
+                </TableCell>
+                <TableCell>
+                  {isLoaded && item.latitude && item.longitude && (
+                    <Box sx={{ position: 'relative', height: '100px', marginBottom: 2 }}>
+                      <GoogleMap
+                        center={{ lat: item.latitude, lng: item.longitude }}
+                        zoom={8}
+                        mapContainerStyle={{ width: '100%', height: '100%' }}
+                      >
+                        <Marker position={{ lat: item.latitude, lng: item.longitude }} />
+                      </GoogleMap>
+                    </Box>
+                  )}
                 </TableCell>
                 <TableCell align="right">
                   <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <IconButton
                       color="primary"
                       onClick={() => handleUpdate(item.researchID)}
+                      size="small"
                       sx={{ marginLeft: 1 }}
                     >
                       <Edit />
@@ -144,6 +186,7 @@ const ManageResearch = () => {
                     <IconButton
                       color="error"
                       onClick={() => handleDelete(item.researchID)}
+                      size="small"
                       sx={{ marginLeft: 1 }}
                     >
                       <Delete />
@@ -154,6 +197,15 @@ const ManageResearch = () => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={research.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>Confirm Delete</DialogTitle>

@@ -2,19 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBell, FaHome, FaUser, FaResearchgate, FaForumbee, FaChartPie, FaSignInAlt, FaUserPlus, FaBars } from 'react-icons/fa';
 import './Sidebar.css';
+import { connect } from '../services/WebSocketService';
 
 const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
   const [localUserRole, setLocalUserRole] = useState(userRole);
   const [localIsAuthenticated, setLocalIsAuthenticated] = useState(isAuthenticated);
   const [localUserName, setLocalUserName] = useState(userName);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     setLocalUserRole(userRole);
     setLocalIsAuthenticated(isAuthenticated);
     setLocalUserName(userName);
+
+    if (isAuthenticated) {
+      connect(onMessageReceived, 'notifications');
+    }
   }, [userRole, isAuthenticated, userName]);
+
+  const onMessageReceived = (notification) => {
+    setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+  };
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -38,7 +48,7 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
             <>
               <li><Link to="/home"><FaHome /> Home</Link></li>
               <li><Link to="/public-knowledge"><FaResearchgate /> Public Knowledge</Link></li>
-              <li><Link to="/agriculture-research"><FaChartPie /> Agriculture Research</Link></li>
+              <li><Link to="/agricultureresearch"><FaChartPie /> Agriculture Research</Link></li>
               <li><Link to="/forums"><FaForumbee /> Forums</Link></li>
               <li><Link to="/infographics"><FaChartPie /> Infographics</Link></li>
             </>
@@ -52,6 +62,8 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
                   <li><Link to="/admin/manage-research"><FaResearchgate /> Manage Research</Link></li>
                   <li><Link to="/admin/manage-forums"><FaForumbee /> Manage Forums</Link></li>
                   <li><Link to="/admin/manage-feedbacks"><FaChartPie /> Manage Feedbacks</Link></li>
+                  <li><Link to="/admin/manage-notifications"><notification-icon /> What is Happening</Link></li>
+
                 </>
               )}
               {localUserRole === 'ROLE_FARMER' && (
@@ -90,13 +102,21 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
           <div className="sidebar-bottom">
             <div className="notification-icon" onClick={toggleNotifications}>
               <FaBell />
+              {notifications.length > 0 && <span className="notification-count">{notifications.length}</span>}
             </div>
             {showNotifications && (
               <div className="notification-popup">
                 <ul>
-                  <li>Notification 1</li>
-                  <li>Notification 2</li>
-                  <li>Notification 3</li>
+                  {notifications.slice(0, 3).map((notification, index) => (
+                    <li key={index}>
+                      {notification.message}
+                    </li>
+                  ))}
+                  {notifications.length > 3 && (
+                    <li>
+                      <Link to="/admin/notifications">See more</Link>
+                    </li>
+                  )}
                 </ul>
               </div>
             )}

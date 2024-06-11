@@ -338,3 +338,335 @@ body {
 .MuiIconButton-root.colorError {
   color: red;
 }
+/* index.css */
+/* index.css */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  margin-top: 40px;
+}
+
+.header {
+  margin-bottom: 40px;
+  text-align: center;
+  font-size: 2.5rem;
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 50%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-media {
+  height: 200px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #2e7d32;
+  margin-bottom: 8px;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #666;
+  flex-grow: 1;
+}
+
+.card-link {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.card-link a {
+  text-decoration: none;
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  border: none;
+  background-color: #000000;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+/* index.css */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.header {
+  margin-bottom: 40px;
+  text-align: center;
+  font-size: 2.5rem;
+  color: #3f51b5;
+  font-weight: 700;
+}
+
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-media {
+  height: 200px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.card-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #3f51b5;
+  margin-bottom: 8px;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #666;
+  flex-grow: 1;
+}
+
+.card-link {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.card-link a {
+  text-decoration: none;
+  color: #3f51b5;
+  font-weight: bold;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  border: none;
+  background-color: #3f51b5;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-item {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  transition: transform 0.2s;
+}
+
+.comment-item:hover {
+  transform: scale(1.02);
+}
+
+.comment-text {
+  font-size: 1rem;
+  color: #333;
+}
+
+.comment-date {
+  font-size: 0.875rem;
+  color: #777;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #3f51b5;
+  color: #fff;
+}
+
+.feedback-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.feedback-button:hover {
+  background-color: #218838;
+}
+/* index.css home */
+/* index.css */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.header {
+  margin-bottom: 40px;
+  text-align: center;
+  font-size: 2.5rem;
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.hero-box {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 40px;
+}
+
+.hero-button {
+  font-size: 1.2rem;
+  padding: 10px 30px;
+  border-radius: 50px;
+  background-color: #2e7d32;
+  color: white;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.hero-button:hover {
+  background-color: #1b5e20;
+  transform: scale(1.05);
+}
+
+.app-bar {
+  background-color: #2e7d32;
+}

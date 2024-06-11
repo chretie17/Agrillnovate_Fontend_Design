@@ -1,25 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField, Grid, Typography } from '@mui/material';
+import { Button, TextField, Grid, Typography, Card, CardMedia, CardContent } from '@mui/material';
 import { getResearchById, updateResearch } from '../../services/AdminService';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+
+const containerStyle = {
+  width: '100%',
+  height: '300px'
+};
+
+const center = {
+  lat: -3.745,
+  lng: -38.523
+};
 
 const AdminUpdateResearch = ({ id, onClose }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [datePublished, setDatePublished] = useState('');
   const [content, setContent] = useState('');
-  const [image, setImage] = useState(null);
-  const [currentImage, setCurrentImage] = useState(null);
-  const [newImagePreview, setNewImagePreview] = useState(null);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [images, setImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg'
+  });
 
   useEffect(() => {
     const fetchResearch = async () => {
       try {
         const research = await getResearchById(id);
-        setTitle(research.title);
-        setAuthor(research.author);
-        setDatePublished(research.datePublished);
-        setContent(research.content);
-        setCurrentImage(`data:image/jpeg;base64,${research.image}`);
+        if (research) {
+          setTitle(research.title || '');
+          setAuthor(research.author || '');
+          setDatePublished(research.datePublished || '');
+          setContent(research.content || '');
+          setLatitude(research.latitude || '');
+          setLongitude(research.longitude || '');
+          setImages(research.images || []);
+        }
       } catch (error) {
         console.error('There was an error fetching the research!', error);
       }
@@ -32,10 +52,10 @@ const AdminUpdateResearch = ({ id, onClose }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const researchData = { title, author, datePublished, content };
+    const researchData = { title, author, datePublished, content, latitude, longitude };
 
     try {
-      const response = await updateResearch(id, researchData, image);
+      const response = await updateResearch(id, researchData, newImages);
       console.log('Research updated successfully', response);
       if (onClose) onClose();
     } catch (error) {
@@ -44,14 +64,12 @@ const AdminUpdateResearch = ({ id, onClose }) => {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
+    setNewImages(e.target.files);
+  };
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setNewImagePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
+  const handleMapClick = (event) => {
+    setLatitude(event.latLng.lat());
+    setLongitude(event.latLng.lng());
   };
 
   return (
@@ -106,32 +124,65 @@ const AdminUpdateResearch = ({ id, onClose }) => {
             required
           />
         </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Latitude"
+            fullWidth
+            margin="normal"
+            value={latitude}
+            onChange={(e) => setLatitude(e.target.value)}
+            required
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            label="Longitude"
+            fullWidth
+            margin="normal"
+            value={longitude}
+            onChange={(e) => setLongitude(e.target.value)}
+            required
+          />
+        </Grid>
         <Grid item xs={12}>
-          {newImagePreview ? (
-            <img
-              src={newImagePreview}
-              alt="New Research"
-              style={{ width: '100%', height: 'auto', marginBottom: '10px' }}
-            />
-          ) : (
-            currentImage && (
-              <img
-                src={currentImage}
-                alt="Current Research"
-                style={{ width: '100%', height: 'auto', marginBottom: '10px' }}
-              />
-            )
-          )}
-          <Button
-            variant="contained"
-            component="label"
-          >
-            Upload Image
-            <input
-              type="file"
-              hidden
-              onChange={handleImageChange}
-            />
+          <Card>
+            <CardContent>
+              {isLoaded ? (
+                <GoogleMap
+                  mapContainerStyle={containerStyle}
+                  center={{ lat: parseFloat(latitude) || center.lat, lng: parseFloat(longitude) || center.lng }}
+                  zoom={10}
+                  onClick={handleMapClick}
+                >
+                  <Marker position={{ lat: parseFloat(latitude) || center.lat, lng: parseFloat(longitude) || center.lng }} />
+                </GoogleMap>
+              ) : (
+                <Typography>Loading Map...</Typography>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h6">Current Images</Typography>
+          <Grid container spacing={2}>
+            {images.map((img, index) => (
+              <Grid item xs={3} key={index}>
+                <Card>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={`data:image/jpeg;base64,${img.image}`}
+                    alt="Research Image"
+                  />
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Button variant="contained" component="label">
+            Upload New Images
+            <input type="file" hidden multiple onChange={handleImageChange} />
           </Button>
         </Grid>
         <Grid item xs={12}>

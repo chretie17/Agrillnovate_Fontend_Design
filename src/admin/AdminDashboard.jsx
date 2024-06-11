@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Card, CardContent, Typography, Box } from '@mui/material';
+import { Container, Grid, Card, CardContent, Typography } from '@mui/material';
 import UsersTable from './UsersTable';
 import ResearchTable from './ResearchTable';
 import FeedbackTable from './FeedbackTable';
@@ -23,13 +23,19 @@ const AdminDashboard = () => {
         const forumsData = await getForums();
         const notificationsData = await getNotifications();
 
+        console.log("Fetched users:", usersData);
+        console.log("Fetched research:", researchData);
+        console.log("Fetched feedback:", feedbackData);
+        console.log("Fetched forums:", forumsData);
+        console.log("Fetched notifications:", notificationsData);
+
         setUsers(usersData);
         setResearch(researchData);
         setFeedback(feedbackData);
         setForums(forumsData);
         setNotifications(notificationsData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
     };
 
@@ -39,18 +45,20 @@ const AdminDashboard = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        {/* Users */}
-        <Grid item xs={12} md={6} lg={6}>
+        <Grid item xs={12} md={12} lg={12}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Users
               </Typography>
-              <UsersTable users={users} />
+              {users.length === 0 ? (
+                <Typography variant="body2" color="text.secondary">No users available</Typography>
+              ) : (
+                <UsersTable users={users} />
+              )}
             </CardContent>
           </Card>
         </Grid>
-        {/* Research */}
         <Grid item xs={12} md={6} lg={6}>
           <Card>
             <CardContent>
@@ -61,7 +69,6 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-        {/* Feedback */}
         <Grid item xs={12} md={6} lg={6}>
           <Card>
             <CardContent>
@@ -72,7 +79,6 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-        {/* Forums */}
         <Grid item xs={12} md={6} lg={6}>
           <Card>
             <CardContent>
@@ -83,7 +89,6 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-        {/* Notifications */}
         <Grid item xs={12} md={6} lg={6}>
           <Card>
             <CardContent>

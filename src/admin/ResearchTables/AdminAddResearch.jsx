@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, TextField, Grid, Typography } from '@mui/material';
 import { createResearch } from '../../services/AdminService';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
 const AdminAddResearch = ({ onClose }) => {
   const [title, setTitle] = useState('');
@@ -8,10 +9,16 @@ const AdminAddResearch = ({ onClose }) => {
   const [datePublished, setDatePublished] = useState('');
   const [content, setContent] = useState('');
   const [image, setImage] = useState(null);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg',
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const researchData = { title, author, datePublished, content };
+    const researchData = { title, author, datePublished, content, latitude, longitude };
 
     try {
       const response = await createResearch(researchData, image);
@@ -24,6 +31,11 @@ const AdminAddResearch = ({ onClose }) => {
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
+  };
+
+  const handleMapClick = (event) => {
+    setLatitude(event.latLng.lat());
+    setLongitude(event.latLng.lng());
   };
 
   return (
@@ -90,6 +102,20 @@ const AdminAddResearch = ({ onClose }) => {
               onChange={handleImageChange}
             />
           </Button>
+        </Grid>
+        <Grid item xs={12}>
+          {isLoaded && (
+            <GoogleMap
+              center={{ lat: latitude || 0, lng: longitude || 0 }}
+              zoom={8}
+              mapContainerStyle={{ width: '100%', height: '400px' }}
+              onClick={handleMapClick}
+            >
+              {latitude && longitude && (
+                <Marker position={{ lat: latitude, lng: longitude }} />
+              )}
+            </GoogleMap>
+          )}
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" color="primary" type="submit">

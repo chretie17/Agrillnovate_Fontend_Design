@@ -61,3 +61,33 @@ export const getNotifications = async () => {
     throw error;
   }
 };
+
+export const updateResearchProject = async (id, formValues, newImages) => {
+  const formData = new FormData();
+  formData.append('research', new Blob([JSON.stringify(formValues)], { type: 'application/json' }));
+  if (newImages.length > 0) {
+    Array.from(newImages).forEach(file => formData.append('images', file));
+  }
+
+  try {
+    const response = await axios.put(`${API_URL}/research/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating research project', error);
+    throw error;
+  }
+};
+
+export const deleteResearchProject = async (id) => {
+  try {
+    const response = await axios.delete(`${API_URL}/research/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting research project', error);
+    throw error;
+  }
+};

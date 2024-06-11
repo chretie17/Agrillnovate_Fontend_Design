@@ -12,6 +12,7 @@ const UsersTable = ({ users }) => {
             <TableCell>Role</TableCell>
             <TableCell>Phone</TableCell>
             <TableCell>Address</TableCell>
+            <TableCell>Created At</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -22,6 +23,7 @@ const UsersTable = ({ users }) => {
               <TableCell>{user.role}</TableCell>
               <TableCell>{user.phone}</TableCell>
               <TableCell>{user.address}</TableCell>
+              <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
             </TableRow>
           ))}
         </TableBody>
