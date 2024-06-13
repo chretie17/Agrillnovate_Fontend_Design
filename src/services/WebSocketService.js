@@ -8,16 +8,51 @@ export function connect(onMessageReceived) {
   stompClient = new Client({
     webSocketFactory: () => socket,
     reconnectDelay: 5000,
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
+    debug: function (str) {
+      console.log('WebSocketService.js:', str);
+    },
+    onConnect: () => {
+      console.log('WebSocketService.js: Web Socket Opened and Connected...');
+      onMessageReceived();
+    },
+    onStompError: (frame) => {
+      console.error('WebSocketService.js: Broker reported error: ' + frame.headers['message']);
+      console.error('WebSocketService.js: Additional details: ' + frame.body);
+    },
+    onWebSocketError: (error) => {
+      console.error('WebSocketService.js: WebSocket error:', error);
+    },
+    onWebSocketClose: (event) => {
+      console.log('WebSocketService.js: WebSocket connection closed:', event);
+    }
+  });
+
+  stompClient.activate();
+}
+
+export const sendMessage = (destination, message) => {
+  if (stompClient && stompClient.connected) {
+    stompClient.publish({
+      destination: destination,
+      body: JSON.stringify(message),
+    });
+  } else {
+    console.error('WebSocketService.js: WebSocket connection not established.');
+  }
+};
+
+export const connectWebSocket = (onNotificationReceived) => {
+  const socket = new SockJS('http://localhost:8080/ws');
+  stompClient = new Client({
+    webSocketFactory: () => socket,
+    reconnectDelay: 5000,
     debug: function (str) {
       console.log('WebSocketService.js:', str);
     },
     onConnect: () => {
       console.log('WebSocketService.js: Web Socket Opened and Connected...');
       stompClient.subscribe('/topic/notifications', (message) => {
-        console.log('WebSocketService.js: Received notification:', message);
-        onMessageReceived(JSON.parse(message.body));
+        onNotificationReceived(JSON.parse(message.body));
       });
     },
     onStompError: (frame) => {
@@ -32,21 +67,12 @@ export function connect(onMessageReceived) {
     }
   });
 
-  try {
-    stompClient.activate();
-  } catch (error) {
-    console.error('WebSocketService.js: Activation error:', error);
-  }
-}
+  stompClient.activate();
+};
 
-export const sendMessage = (destination, message) => {
-  if (stompClient && stompClient.connected) {
-    stompClient.publish({
-      destination: destination,
-      body: JSON.stringify(message),
-    });
-  } else {
-    console.error('WebSocketService.js: WebSocket connection not established.');
+export const disconnectWebSocket = () => {
+  if (stompClient !== null) {
+    stompClient.deactivate();
   }
 };
 

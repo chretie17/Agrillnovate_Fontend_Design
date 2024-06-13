@@ -3,16 +3,17 @@ import { Container, Grid, Card, CardContent, Typography } from '@mui/material';
 import UsersTable from './UsersTable';
 import ResearchTable from './ResearchTable';
 import FeedbackTable from './FeedbackTable';
-import ForumsTable from './ForumsTable';
+import ThreadsTable from './forumstables/ThreadsTable';
+import PostsTable from './forumstables/PostsTable';
 import NotificationsTable from './NotificationsTable';
-import { getUsers, getResearch, getFeedback, getForums, getNotifications } from '../services/AdminService';
+import { getUsers, getResearch, getFeedback, getThreads, getPosts } from '../services/AdminService';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [research, setResearch] = useState([]);
   const [feedback, setFeedback] = useState([]);
-  const [forums, setForums] = useState([]);
-  const [notifications, setNotifications] = useState([]);
+  const [threads, setThreads] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,20 +21,14 @@ const AdminDashboard = () => {
         const usersData = await getUsers();
         const researchData = await getResearch();
         const feedbackData = await getFeedback();
-        const forumsData = await getForums();
-        const notificationsData = await getNotifications();
-
-        console.log("Fetched users:", usersData);
-        console.log("Fetched research:", researchData);
-        console.log("Fetched feedback:", feedbackData);
-        console.log("Fetched forums:", forumsData);
-        console.log("Fetched notifications:", notificationsData);
+        const threadsData = await getThreads();
+        const postsData = await getPosts();
 
         setUsers(usersData);
         setResearch(researchData);
         setFeedback(feedbackData);
-        setForums(forumsData);
-        setNotifications(notificationsData);
+        setThreads(threadsData);
+        setPosts(postsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -83,9 +78,9 @@ const AdminDashboard = () => {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Forums
+                Threads
               </Typography>
-              <ForumsTable forums={forums} />
+              <ThreadsTable threads={threads} />
             </CardContent>
           </Card>
         </Grid>
@@ -93,9 +88,19 @@ const AdminDashboard = () => {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
+                Posts
+              </Typography>
+              <PostsTable posts={posts} />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={12} lg={12}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
                 Notifications
               </Typography>
-              <NotificationsTable notifications={notifications} />
+              <NotificationsTable />
             </CardContent>
           </Card>
         </Grid>

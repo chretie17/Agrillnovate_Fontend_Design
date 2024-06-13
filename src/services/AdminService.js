@@ -155,42 +155,23 @@ const deleteFeedback = async (id) => {
   }
 };
 
-// Get all forums
-const getForums = async () => {
+// Forum services
+const getThreads = async () => {
   try {
-    const response = await axios.get(`${API_URL}/forums`);
+    const response = await axios.get(`${API_URL}/forums/threads`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching forums:', error);
+    console.error('Error fetching threads', error);
     throw error;
   }
 };
 
-const createForum = async (forum) => {
+const getPosts = async () => {
   try {
-    const response = await axios.post(`${API_URL}/forums`, forum);
+    const response = await axios.get(`${API_URL}/forums/posts`);
     return response.data;
   } catch (error) {
-    console.error('Error creating forum:', error);
-    throw error;
-  }
-};
-
-const updateForum = async (id, forumDetails) => {
-  try {
-    const response = await axios.put(`${API_URL}/forums/${id}`, forumDetails);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating forum:', error);
-    throw error;
-  }
-};
-
-const deleteForum = async (id) => {
-  try {
-    await axios.delete(`${API_URL}/forums/${id}`);
-  } catch (error) {
-    console.error('Error deleting forum:', error);
+    console.error('Error fetching posts', error);
     throw error;
   }
 };
@@ -201,36 +182,7 @@ const getNotifications = async () => {
     const response = await axios.get(`${API_URL}/notifications`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching notifications:', error);
-    throw error;
-  }
-};
-
-const createNotification = async (notification) => {
-  try {
-    const response = await axios.post(`${API_URL}/notifications`, notification);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating notification:', error);
-    throw error;
-  }
-};
-
-const updateNotification = async (id, notificationDetails) => {
-  try {
-    const response = await axios.put(`${API_URL}/notifications/${id}`, notificationDetails);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating notification:', error);
-    throw error;
-  }
-};
-
-const deleteNotification = async (id) => {
-  try {
-    await axios.delete(`${API_URL}/notifications/${id}`);
-  } catch (error) {
-    console.error('Error deleting notification:', error);
+    console.error('Error fetching notifications', error);
     throw error;
   }
 };
@@ -250,12 +202,7 @@ export {
   createFeedback,
   updateFeedback,
   deleteFeedback,
-  getForums,
-  createForum,
-  updateForum,
-  deleteForum,
-  getNotifications,
-  createNotification,
-  updateNotification,
-  deleteNotification
+  getThreads,
+  getPosts,
+  getNotifications
 };

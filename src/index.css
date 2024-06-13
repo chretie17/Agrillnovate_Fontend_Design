@@ -670,3 +670,6 @@ body {
 .app-bar {
   background-color: #2e7d32;
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

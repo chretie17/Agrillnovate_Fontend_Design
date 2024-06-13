@@ -62,32 +62,36 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
                   <li><Link to="/admin/manage-research"><FaResearchgate /> Manage Research</Link></li>
                   <li><Link to="/admin/manage-forums"><FaForumbee /> Manage Forums</Link></li>
                   <li><Link to="/admin/manage-feedbacks"><FaChartPie /> Manage Feedbacks</Link></li>
-                  <li><Link to="/admin/manage-notifications"><notification-icon /> What is Happening</Link></li>
-
-                </>
-              )}
-              {localUserRole === 'ROLE_FARMER' && (
-                <>
-                  <li><Link to="/farmer-dashboard"><FaHome /> Farmer Dashboard</Link></li>
-                  <li><Link to="/research"><FaResearchgate /> Research</Link></li>
-                  <li><Link to="/forum"><FaForumbee /> Forum</Link></li>
-                  <li><Link to="/profile"><FaUser /> Profile</Link></li>
+                  <li><Link to="/admin/manage-notifications"><FaBell /> Manage Notifications</Link></li>
                 </>
               )}
               {localUserRole === 'ROLE_EXPERT' && (
                 <>
-                  <li><Link to="/expert-dashboard"><FaResearchgate /> Dashboard </Link></li>
-                  <li><Link to="/expert/add-research"><FaResearchgate /> Publish your Research</Link></li>
+                  <li><Link to="/expert-dashboard"><FaResearchgate /> Dashboard</Link></li>
+                  <li><Link to="/expert/add-research"><FaResearchgate /> Publish Your Research</Link></li>
                   <li><Link to="/expert/manage-my-research"><FaChartPie /> Manage Research</Link></li>
                   <li><Link to="/profile"><FaUser /> Profile</Link></li>
                 </>
               )}
-              {localUserRole === 'ROLE_COMMUNITYMEMBER' && (
+              {(localUserRole === 'ROLE_FARMER' || localUserRole === 'ROLE_COMMUNITYMEMBER') && (
                 <>
-                  <li><Link to="/community-dashboard"><FaHome /> Community Dashboard</Link></li>
-                  <li><Link to="/research"><FaResearchgate /> Research</Link></li>
-                  <li><Link to="/forum"><FaForumbee /> Forum</Link></li>
-                  <li><Link to="/profile"><FaUser /> Profile</Link></li>
+                  <li><Link to="/home"><FaHome /> Home</Link></li>
+                  <li><Link to="/public-knowledge"><FaResearchgate /> Public Knowledge</Link></li>
+                  <li><Link to="/agricultureresearch"><FaChartPie /> Agriculture Research</Link></li>
+                  <li><Link to="/forums"><FaForumbee /> Forums</Link></li>
+                  <li><Link to="/infographics"><FaChartPie /> Infographics</Link></li>
+                  {localUserRole === 'ROLE_FARMER' && (
+                    <>
+                      <li><Link to="/farmer-dashboard"><FaHome /> Farmer Dashboard</Link></li>
+                      <li><Link to="/profile"><FaUser /> Profile</Link></li>
+                    </>
+                  )}
+                  {localUserRole === 'ROLE_COMMUNITYMEMBER' && (
+                    <>
+                      <li><Link to="/community-dashboard"><FaHome /> Community Dashboard</Link></li>
+                      <li><Link to="/profile"><FaUser /> Profile</Link></li>
+                    </>
+                  )}
                 </>
               )}
             </>
@@ -108,13 +112,15 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
               <div className="notification-popup">
                 <ul>
                   {notifications.slice(0, 3).map((notification, index) => (
-                    <li key={index}>
-                      {notification.message}
-                    </li>
+                    notification && notification.message ? (
+                      <li key={index}>
+                        {notification.message}
+                      </li>
+                    ) : null
                   ))}
                   {notifications.length > 3 && (
                     <li>
-                      <Link to="/admin/notifications">See more</Link>
+                      <Link to="/notifications">See more</Link>
                     </li>
                   )}
                 </ul>

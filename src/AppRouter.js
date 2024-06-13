@@ -5,6 +5,7 @@ import Dashboard from './Dashboard/Dashboard';
 import AdminDashboard from './admin/AdminDashboard';
 import ManageUsers from './admin/ManageUsers';
 import ManageResearch from './admin/ResearchTables/ManageResearch';
+import NotificationComponent from './components/NotificationComponent';
 import ManageForums from './admin/ManageForums';
 import Managenotifications from './admin/AdminNotifications'
 import ManageFeedbacks from './admin/ManageFeedbacks';
@@ -77,7 +78,7 @@ const AppRouter = () => {
           <Route path="/research/:id" element={<ResearchDetail />} />
           <Route path="/agricultureresearch" element={<AgriculturalResearch />} />
 
-          <Route path="/forum" element={<Forum />} />
+          <Route path="/forums" element={<Forum />} />
           <Route path="/research" element={<ResearchManagement />} />
           {isAuthenticated ? (
             <>
