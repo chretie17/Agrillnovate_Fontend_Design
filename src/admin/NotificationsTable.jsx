@@ -23,7 +23,6 @@ const NotificationsTable = () => {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>User</TableCell>
             <TableCell>Message</TableCell>
             <TableCell>Date Sent</TableCell>
           </TableRow>
@@ -31,7 +30,6 @@ const NotificationsTable = () => {
         <TableBody>
           {notifications.map((notification) => (
             <TableRow key={notification.notificationID}>
-              <TableCell>{notification.user?.name || 'Unknown'}</TableCell>
               <TableCell>{notification.message}</TableCell>
               <TableCell>{moment(notification.dateSent).format('YYYY-MM-DD HH:mm:ss')}</TableCell>
             </TableRow>

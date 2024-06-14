@@ -1,49 +1,57 @@
 import React, { useState } from 'react';
+import { Box, Modal, Typography, Button, TextField } from '@mui/material';
+import { sendMessage } from '../services/WebSocketService';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const ChatModal = ({ onClose }) => {
-  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
 
-  const handleSend = () => {
-    if (message) {
-      setMessages([...messages, message]);
-      setMessage('');
-    }
+  const handleSendMessage = () => {
+    sendMessage(message);
+    setMessages([...messages, message]);
+    setMessage('');
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-1/2 p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl">Chat</h2>
-          <button className="text-red-500" onClick={onClose}>
-            Close
-          </button>
-        </div>
-        <div className="chat-messages h-64 overflow-y-scroll mb-4">
+    <Modal
+      open
+      onClose={onClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <Typography id="modal-modal-title" variant="h6" component="h2">
+          Chat
+        </Typography>
+        <Box id="modal-modal-description" sx={{ mt: 2 }}>
           {messages.map((msg, index) => (
-            <div key={index} className="mb-2 p-2 bg-gray-100 rounded">
-              {msg}
-            </div>
+            <Typography key={index}>{msg}</Typography>
           ))}
-        </div>
-        <div className="flex">
-          <input
-            type="text"
+          <TextField
+            fullWidth
+            variant="outlined"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Type your message"
-            className="w-full p-2 border border-gray-300 rounded"
           />
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded ml-2"
-            onClick={handleSend}
-          >
+          <Button onClick={handleSendMessage} sx={{ mt: 2 }} variant="contained">
             Send
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
   );
 };
 

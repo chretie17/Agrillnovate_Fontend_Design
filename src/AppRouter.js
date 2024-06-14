@@ -7,13 +7,14 @@ import ManageUsers from './admin/ManageUsers';
 import ManageResearch from './admin/ResearchTables/ManageResearch';
 import NotificationComponent from './components/NotificationComponent';
 import ManageForums from './admin/ManageForums';
-import Managenotifications from './admin/AdminNotifications'
+import Managenotifications from './admin/AdminNotifications';
 import ManageFeedbacks from './admin/ManageFeedbacks';
 import ExpertDashboard from './expert/ExpertDashboard';
 import FarmerDashboard from './Dashboard/FarmerDashboard';
 import CommunityDashboard from './Dashboard/CommunityDashboard';
 import ResearchManagement from './researchManagement/ResearchManagement';
-import Forum from './forum/forums';
+import Forums from './forum/forums';
+import ThreadComponent from './forum/ThreadComponent';
 import NotificationsPopup from './components/NotificationsPopup';
 import Login from './auth/login';
 import Signup from './auth/Signup';
@@ -78,7 +79,8 @@ const AppRouter = () => {
           <Route path="/research/:id" element={<ResearchDetail />} />
           <Route path="/agricultureresearch" element={<AgriculturalResearch />} />
 
-          <Route path="/forums" element={<Forum />} />
+          <Route path="/forums" element={<Forums isAuthenticated={isAuthenticated} />} />
+          <Route path="/threads/:threadId" element={<ThreadComponent isAuthenticated={isAuthenticated} />} />
           <Route path="/research" element={<ResearchManagement />} />
           {isAuthenticated ? (
             <>
@@ -90,7 +92,6 @@ const AppRouter = () => {
                   <Route path="/admin/manage-forums" element={<ManageForums />} />
                   <Route path="/admin/manage-feedbacks" element={<ManageFeedbacks />} />
                   <Route path="/admin/manage-notifications" element={<Managenotifications />} />
-
                   <Route path="/admin/add-research" element={<AdminAddResearch />} />
                   <Route path="/admin/update-research/:id" element={<AdminUpdateResearch />} />
                 </>

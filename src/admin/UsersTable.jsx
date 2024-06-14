@@ -1,7 +1,19 @@
-import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
 
 const UsersTable = ({ users }) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Adjust as needed
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table size="small">
@@ -16,7 +28,7 @@ const UsersTable = ({ users }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user) => (
+          {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
             <TableRow key={user.userID}>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
@@ -28,6 +40,15 @@ const UsersTable = ({ users }) => {
           ))}
         </TableBody>
       </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]} // Customize as per your requirement
+        component="div"
+        count={users.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </TableContainer>
   );
 };

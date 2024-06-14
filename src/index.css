@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .sidebar {
   width: 220px;
   background-color: #fff;
@@ -670,6 +674,88 @@ body {
 .app-bar {
   background-color: #2e7d32;
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+
+/* ManageForums.css */
+
+.manage-forums {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.manage-forums h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.manage-forums h2 {
+  font-size: 1.5rem;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #34495e;
+}
+
+.manage-forums input[type="text"] {
+  width: 80%;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.manage-forums button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.manage-forums button.create-btn {
+  background-color: #27ae60;
+  color: #fff;
+}
+
+.manage-forums button.update-btn {
+  background-color: #f39c12;
+  color: #fff;
+}
+
+.manage-forums button.delete-btn {
+  background-color: #c0392b;
+  color: #fff;
+}
+
+.manage-forums button:hover {
+  opacity: 0.9;
+}
+
+.manage-forums ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.manage-forums li {
+  background-color: #ecf0f1;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.manage-forums li button {
+  margin-left: 10px;
+}
+
+.no-comments {
+  font-style: italic;
+  color: #7f8c8d;
+}

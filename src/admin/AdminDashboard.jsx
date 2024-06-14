@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Card, CardContent, Typography } from '@mui/material';
+import {
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  useTheme
+} from '@mui/material';
 import UsersTable from './UsersTable';
 import ResearchTable from './ResearchTable';
 import FeedbackTable from './FeedbackTable';
@@ -37,13 +45,25 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
+  const theme = useTheme();
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={12} lg={12}>
-          <Card>
+        <Grid item xs={12}>
+          <Card elevation={3} sx={{ borderRadius: 3, backgroundColor: theme.palette.primary.light }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
+                Notifications
+              </Typography>
+              <NotificationsTable />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Card elevation={3} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.paper }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>
                 Users
               </Typography>
               {users.length === 0 ? (
@@ -54,53 +74,43 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Card>
+        <Grid item xs={12} md={6}>
+          <Card elevation={3} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.paper }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 Research
               </Typography>
               <ResearchTable research={research} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Card>
+        <Grid item xs={12} md={6}>
+          <Card elevation={3} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.paper }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 Feedback
               </Typography>
               <FeedbackTable feedback={feedback} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Card>
+        <Grid item xs={12} md={6}>
+          <Card elevation={3} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.paper }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 Threads
               </Typography>
               <ThreadsTable threads={threads} />
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <Card>
+        <Grid item xs={12} md={6}>
+          <Card elevation={3} sx={{ borderRadius: 3, backgroundColor: theme.palette.background.paper }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 Posts
               </Typography>
               <PostsTable posts={posts} />
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={12} lg={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Notifications
-              </Typography>
-              <NotificationsTable />
             </CardContent>
           </Card>
         </Grid>

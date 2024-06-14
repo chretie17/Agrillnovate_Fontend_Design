@@ -1,21 +1,23 @@
 import React from 'react';
-import '../App.css';
+import { List, ListItem, ListItemText, Typography } from '@mui/material';
 
 const ThreadsList = ({ threads, onThreadSelect }) => {
   return (
-    <div className="thread-list">
-      <h2 className="text-2xl font-semibold mb-4">Forum Threads</h2>
-      <ul className="list-disc pl-5">
+    <div>
+      <Typography variant="h5" component="h2" gutterBottom>
+        Forum Threads
+      </Typography>
+      <List>
         {threads.map((thread) => (
-          <li
+          <ListItem
             key={thread.threadId}
+            button
             onClick={() => onThreadSelect(thread.threadId)}
-            className="mb-2 cursor-pointer text-blue-500 hover:underline"
           >
-            {thread.title}
-          </li>
+            <ListItemText primary={thread.title} />
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 };
