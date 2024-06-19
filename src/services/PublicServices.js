@@ -22,3 +22,24 @@ export const getResearchById = async (id) => {
     throw error;
   }
 };
+// Create comment
+export const createComment = async (commentData) => {
+  try {
+    const response = await axios.post(`${API_URL}/comments`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting comment:', error);
+    throw error;
+  }
+};
+
+// Create feedback
+export const createFeedback = async (feedbackData) => {
+  try {
+    const response = await axios.post(`${API_URL}/feedback`, feedbackData);
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    throw error;
+  }
+};

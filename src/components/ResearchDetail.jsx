@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getResearchById } from '../services/PublicServices';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { jwtDecode } from 'jwt-decode';
-import '../index.css'; // Ensure you import the index.css
+import { createComment, createFeedback, getCommentsByResearchID } from '../services/FeedbackService';
+import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
+import { Drawer, Button, TextField, Typography, Paper, Grid, Avatar, Container, Snackbar, Alert, Fab, Tooltip } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
+import '../index.css';
 
 const ResearchDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [research, setResearch] = useState(null);
   const [newComment, setNewComment] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [feedbackDrawerOpen, setFeedbackDrawerOpen] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   useEffect(() => {
     fetchResearchDetails();
-    checkLoginStatus();
+    fetchComments();
   }, [id]);
 
   const fetchResearchDetails = async () => {
@@ -29,17 +35,13 @@ const ResearchDetail = () => {
     }
   };
 
-  const checkLoginStatus = () => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      try {
-        jwtDecode(token);
-        setIsLoggedIn(true);
-      } catch (error) {
-        setIsLoggedIn(false);
-      }
-    } else {
-      setIsLoggedIn(false);
+  const fetchComments = async () => {
+    try {
+      const data = await getCommentsByResearchID(id);
+      setComments(data);
+    } catch (error) {
+      console.error('Error fetching comments', error);
+      setComments([]);
     }
   };
 
@@ -55,109 +57,214 @@ const ResearchDetail = () => {
     setEmail(event.target.value);
   };
 
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
+
   const handleFeedbackChange = (event) => {
     setFeedback(event.target.value);
   };
 
   const handleCommentSubmit = async () => {
-    // Logic to submit new comment
-    // Add your code here to handle comment submission
-  };
-
-  const handleFeedbackSubmit = async () => {
-    if (!isLoggedIn) {
-      navigate('/login');
-    } else {
-      // Logic to submit feedback
-      // Add your code here to handle feedback submission
+    try {
+      const commentData = {
+        content: newComment,
+        email: email,
+        phone: phone,
+        name: name,
+        researchID: id,
+        dateSubmitted: new Date(),
+      };
+      await createComment(commentData);
+      setNewComment('');
+      setPhone('');
+      setEmail('');
+      setName('');
+      fetchComments();
+      setSnackbarMessage('Comment submitted successfully');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Error submitting comment', error);
+      setSnackbarMessage('Error submitting comment');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
+  const handleFeedbackSubmit = async () => {
+    try {
+      const feedbackData = {
+        content: feedback,
+        researchID: id,
+        dateSubmitted: new Date(),
+      };
+      await createFeedback(feedbackData);
+      setFeedbackDrawerOpen(false);
+      setFeedback('');
+      setSnackbarMessage('Feedback submitted successfully');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Error submitting feedback', error);
+      setSnackbarMessage('Error submitting feedback');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
-    <div className="container">
+    <Container sx={{ paddingTop: 4, paddingBottom: 4 }}>
       {research ? (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="p-6">
-            <h1 className="text-4xl font-bold mb-4">{research.title}</h1>
-            <h2 className="text-xl font-semibold mb-2">By: {research.author}</h2>
-            <p className="text-gray-700 mb-6">{research.content}</p>
-            <hr className="my-4" />
-            <div className="mt-6">
-              <h3 className="text-2xl font-bold mb-4">Location</h3>
-              <LoadScript googleMapsApiKey="AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg">
-                <GoogleMap
-                  mapContainerStyle={{ height: "400px", width: "100%" }}
-                  center={{ lat: research.latitude, lng: research.longitude }}
-                  zoom={15}
-                >
-                  <Marker position={{ lat: research.latitude, lng: research.longitude }} />
-                </GoogleMap>
-              </LoadScript>
-            </div>
-            <hr className="my-4" />
-            <div className="mt-6">
-              <h3 className="text-2xl font-bold mb-4">Comments</h3>
-              <ul className="comment-list">
-                {research.feedbacks.map((comment, index) => (
-                  <li key={index} className="comment-item">
-                    <p className="comment-text">{comment.comments}</p>
-                    <p className="comment-date">{comment.dateSubmitted}</p>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6 space-y-4">
-                <input
-                  type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Phone"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                />
-                <input
-                  type="email"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Email"
-                  value={email}
-                  onChange={handleEmailChange}
-                />
-                <textarea
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="New Comment"
-                  value={newComment}
-                  onChange={handleCommentChange}
-                  rows="4"
-                ></textarea>
-                <button
-                  onClick={handleCommentSubmit}
-                  className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                  Submit Comment
-                </button>
-              </div>
-            </div>
-            <hr className="my-4" />
-            <div className="mt-6">
-              <h3 className="text-2xl font-bold mb-4">Feedback</h3>
-              <textarea
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Feedback"
-                value={feedback}
-                onChange={handleFeedbackChange}
-                rows="4"
-              ></textarea>
-              <button
-                onClick={handleFeedbackSubmit}
-                className="w-full bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-300 mt-4 feedback-button"
+        <Paper sx={{ padding: 3, marginBottom: 4 }}>
+          <Typography variant="h4" gutterBottom>
+            {research.title}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            By: {research.author}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            {research.content}
+          </Typography>
+          <div style={{ height: '400px', width: '100%', marginBottom: 20 }}>
+            <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+              <GoogleMap
+                mapContainerStyle={{ height: "100%", width: "100%" }}
+                center={{ lat: research.latitude, lng: research.longitude }}
+                zoom={15}
               >
-                Submit Feedback
-              </button>
+                <MarkerF position={{ lat: research.latitude, lng: research.longitude }} />
+              </GoogleMap>
+            </LoadScript>
+          </div>
+          <div sx={{ marginTop: 4 }}>
+            <Typography variant="h5" gutterBottom>
+              Comments
+            </Typography>
+            {comments.length > 0 ? (
+              <Grid container direction="column" spacing={2}>
+                {comments.map((comment, index) => (
+                  <Grid item key={index}>
+                    <Paper sx={{ padding: 2, marginBottom: 2 }}>
+                      <Grid container alignItems="center">
+                        <Avatar sx={{ marginRight: 2 }}>
+                          {comment.name[0].toUpperCase()}
+                        </Avatar>
+                        <div>
+                          <Typography variant="body1">{comment.content}</Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            {comment.name} - {comment.email} - {comment.phone}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            {new Date(comment.dateSubmitted).toLocaleDateString()}
+                          </Typography>
+                        </div>
+                      </Grid>
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Typography variant="body2" color="textSecondary">
+                No comments yet. Be the first to comment!
+              </Typography>
+            )}
+            <div className="mt-6 space-y-4">
+              <TextField
+                label="Name"
+                fullWidth
+                margin="normal"
+                value={name}
+                onChange={handleNameChange}
+              />
+              <TextField
+                label="Phone"
+                fullWidth
+                margin="normal"
+                value={phone}
+                onChange={handlePhoneChange}
+              />
+              <TextField
+                label="Email"
+                fullWidth
+                margin="normal"
+                value={email}
+                onChange={handleEmailChange}
+              />
+              <TextField
+                label="New Comment"
+                fullWidth
+                margin="normal"
+                multiline
+                rows={4}
+                value={newComment}
+                onChange={handleCommentChange}
+              />
+              <Button
+                onClick={handleCommentSubmit}
+                variant="contained"
+                color="primary"
+                fullWidth
+              >
+                Submit Comment
+              </Button>
             </div>
           </div>
-        </div>
+          <Tooltip title="Give Feedback" aria-label="give feedback">
+            <Fab
+              color="secondary"
+              aria-label="add"
+              onClick={() => setFeedbackDrawerOpen(true)}
+              sx={{ position: 'fixed', right: 20, bottom: 20 }}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+          <Drawer
+            anchor="right"
+            open={feedbackDrawerOpen}
+            onClose={() => setFeedbackDrawerOpen(false)}
+          >
+            <div style={{ width: 300, padding: 20 }}>
+              <Typography variant="h6" gutterBottom>
+                Submit Feedback
+              </Typography>
+              <TextField
+                label="Feedback"
+                fullWidth
+                margin="normal"
+                multiline
+                rows={4}
+                value={feedback}
+                onChange={handleFeedbackChange}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleFeedbackSubmit}
+                style={{ marginTop: 20 }}
+                fullWidth
+              >
+                Submit
+              </Button>
+            </div>
+          </Drawer>
+        </Paper>
       ) : (
-        <p className="text-center text-gray-500">Loading...</p>
+        <Typography variant="h5" align="center" color="textSecondary">
+          Loading...
+        </Typography>
       )}
-    </div>
+      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
 };
 
