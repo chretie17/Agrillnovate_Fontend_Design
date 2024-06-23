@@ -10,7 +10,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme();
 
-const Login = ({ setAuthenticated, setUserRole }) => {
+const Login = ({ setAuthenticated, setUserRole, setUserName }) => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -35,6 +35,7 @@ const Login = ({ setAuthenticated, setUserRole }) => {
         // Set authenticated state and user role in AppRouter
         setAuthenticated(true);
         setUserRole(userRole);
+        setUserName(userName);
         localStorage.setItem('userRole', userRole); // Ensure userRole is consistent
         localStorage.setItem('userName', userName); // Store user name
 
@@ -49,7 +50,7 @@ const Login = ({ setAuthenticated, setUserRole }) => {
               navigate('/expert-dashboard');
               break;
             case 'ROLE_FARMER':
-              navigate('/farmer-dashboard');
+              navigate('/home');
               break;
             case 'ROLE_COMMUNITYMEMBER':
               navigate('/community-dashboard');

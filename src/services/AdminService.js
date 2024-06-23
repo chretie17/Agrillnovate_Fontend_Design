@@ -187,6 +187,18 @@ const getNotifications = async () => {
   }
 };
 
+export const getComments = async () => {
+  const response = await axios.get(`${API_URL}/comments`);
+  return response.data;
+};
+
+
+
+export const createComment = async (commentDTO) => {
+  const response = await axios.post(`${API_URL}/comments`, commentDTO);
+  return response.data;
+};
+
 export {
   setAuthToken,
   getUsers,

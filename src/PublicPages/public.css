@@ -1,0 +1,17 @@
+/* public.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.search-input {
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #2F855A; /* Custom green color */
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}

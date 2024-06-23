@@ -62,7 +62,7 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
                   <li><Link to="/admin/manage-research"><FaResearchgate /> Manage Research</Link></li>
                   <li><Link to="/admin/manage-forums"><FaForumbee /> Manage Forums</Link></li>
                   <li><Link to="/admin/manage-feedbacks"><FaChartPie /> Manage Feedbacks</Link></li>
-                  <li><Link to="/admin/manage-notifications"><FaBell /> Manage Notifications</Link></li>
+                  <li><Link to="/admin/AllCommentsAndFeedbacks"><FaBell /> All Feedbacks and COmments</Link></li>
                 </>
               )}
               {localUserRole === 'ROLE_EXPERT' && (

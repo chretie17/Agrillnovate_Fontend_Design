@@ -51,16 +51,18 @@ const ThreadComponent = ({ isAuthenticated }) => {
 
   return (
     <Container>
-      <Typography variant="h4" component="h2">Thread Details</Typography>
-      <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
+      <Typography variant="h4" component="h2" className="mb-4">Thread Details</Typography>
+      <Paper elevation={3} className="p-4 mb-4 bg-gray-50">
         {posts.length === 0 ? (
           <Typography>No comments yet</Typography>
         ) : (
           posts.map((post, index) => (
-            <Box key={index} sx={{ marginBottom: 2 }}>
+            <Box key={index} className="mb-4">
               <Typography>{post.content}</Typography>
               {isAuthenticated && (
-                <Typography variant="caption">Posted by: {userNames[post.userId]}</Typography>
+                <Typography variant="caption" className="text-gray-500">
+                  Posted by: {userNames[post.userId]}
+                </Typography>
               )}
             </Box>
           ))
@@ -73,7 +75,7 @@ const ThreadComponent = ({ isAuthenticated }) => {
             onChange={(e) => setNewPost(e.target.value)}
             fullWidth
             placeholder="Type your message"
-            sx={{ marginBottom: 2 }}
+            className="mb-4"
           />
           <Button variant="contained" color="primary" onClick={handlePostSubmit}>
             Post

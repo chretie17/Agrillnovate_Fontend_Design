@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
+import Navbar from './components/navbar'; // Correct import
 import Dashboard from './Dashboard/Dashboard';
 import AdminDashboard from './admin/AdminDashboard';
 import ManageUsers from './admin/ManageUsers';
@@ -8,6 +9,7 @@ import ManageResearch from './admin/ResearchTables/ManageResearch';
 import NotificationComponent from './components/NotificationComponent';
 import ManageForums from './admin/ManageForums';
 import Managenotifications from './admin/AdminNotifications';
+import AllCommentsandFeedbacks from './admin/AllCommentsAndFeedbacks';
 import ManageFeedbacks from './admin/ManageFeedbacks';
 import ExpertDashboard from './expert/ExpertDashboard';
 import FarmerDashboard from './Dashboard/FarmerDashboard';
@@ -64,15 +66,19 @@ const AppRouter = () => {
 
   return (
     <Router>
-      <Sidebar 
-        userRole={userRole} 
-        isAuthenticated={isAuthenticated} 
-        onLogout={handleLogout} 
-        userName={userName} 
-      />
+      {isAuthenticated && (userRole === 'ROLE_ADMIN' || userRole === 'ROLE_EXPERT') ? (
+        <Sidebar
+          userRole={userRole}
+          isAuthenticated={isAuthenticated}
+          onLogout={handleLogout}
+          userName={userName}
+        />
+      ) : (
+        <Navbar userName={userName} onLogout={handleLogout} />
+      )}
       <div className="main-content">
         <Routes>
-          <Route path="/login" element={<Login setAuthenticated={setIsAuthenticated} setUserRole={setUserRole} />} />
+          <Route path="/login" element={<Login setAuthenticated={setIsAuthenticated} setUserRole={setUserRole} setUserName={setUserName} />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/home" element={<Homepage />} />
@@ -93,6 +99,8 @@ const AppRouter = () => {
                   <Route path="/admin/manage-feedbacks" element={<ManageFeedbacks />} />
                   <Route path="/admin/manage-notifications" element={<Managenotifications />} />
                   <Route path="/admin/add-research" element={<AdminAddResearch />} />
+                  <Route path="/admin/AllCommentsAndFeedbacks" element={<AllCommentsandFeedbacks />} />
+
                   <Route path="/admin/update-research/:id" element={<AdminUpdateResearch />} />
                 </>
               )}

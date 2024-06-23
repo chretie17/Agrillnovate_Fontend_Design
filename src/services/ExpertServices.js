@@ -91,3 +91,50 @@ export const deleteResearchProject = async (id) => {
     throw error;
   }
 };
+// New functions for fetching comments and feedback by research ID
+export const getCommentsByResearchId = async (researchId) => {
+  try {
+    const response = await axios.get(`${API_URL}/research/${researchId}/comments`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comments', error);
+    throw error;
+  }
+};
+
+export const getFeedbackByResearchId = async (researchId) => {
+  try {
+    const response = await axios.get(`${API_URL}/research/${researchId}/feedbacks`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching feedback', error);
+    throw error;
+  }
+};
+export const getCommentsStats = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/research/comments/stats`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching comments stats', error);
+    throw error;
+  }
+};
+
+export const getFeedbackStats = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/research/feedbacks/stats`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching feedback stats', error);
+    throw error;
+  }
+};

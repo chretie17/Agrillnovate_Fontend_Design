@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FeedbackTable = ({ feedback }) => {
+const CommentsTable = ({ comments }) => {
   const classes = useStyles();
   return (
     <TableContainer component={Paper} className={classes.tableContainer}>
@@ -30,17 +30,23 @@ const FeedbackTable = ({ feedback }) => {
           <TableRow>
             <TableCell className={classes.tableCellHead}>ID</TableCell>
             <TableCell className={classes.tableCellHead}>Content</TableCell>
+            <TableCell className={classes.tableCellHead}>Name</TableCell>
+            <TableCell className={classes.tableCellHead}>Email</TableCell>
+            <TableCell className={classes.tableCellHead}>Phone</TableCell>
             <TableCell className={classes.tableCellHead}>Date Submitted</TableCell>
             <TableCell className={classes.tableCellHead}>Research ID</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {feedback.map((feedbackItem) => (
-            <TableRow key={feedbackItem.feedbackID}>
-              <TableCell>{feedbackItem.feedbackID}</TableCell>
-              <TableCell>{feedbackItem.content}</TableCell>
-              <TableCell>{new Date(feedbackItem.dateSubmitted).toLocaleDateString()}</TableCell>
-              <TableCell>{feedbackItem.researchID}</TableCell>
+          {comments.map((comment) => (
+            <TableRow key={comment.commentID}>
+              <TableCell>{comment.commentID}</TableCell>
+              <TableCell>{comment.content}</TableCell>
+              <TableCell>{comment.name}</TableCell>
+              <TableCell>{comment.email}</TableCell>
+              <TableCell>{comment.phone}</TableCell>
+              <TableCell>{new Date(comment.dateSubmitted).toLocaleDateString()}</TableCell>
+              <TableCell>{comment.researchID}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -49,4 +55,4 @@ const FeedbackTable = ({ feedback }) => {
   );
 };
 
-export default FeedbackTable;
+export default CommentsTable;
