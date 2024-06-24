@@ -34,6 +34,7 @@ import { setAuthToken } from './services/api';
 import PublicKnowledge from './PublicPages/PublicKnowledge';
 import Infographics from './PublicPages/Infographics';
 import PublicKnowledgeDetail from './PublicPages/PubliKnowledgeDetail';
+import Footer from './components/Footer';
 import './App.css'; // Ensure you import your CSS
 
 const AppRouter = () => {
@@ -91,7 +92,6 @@ const AppRouter = () => {
           <Route path="/Infographics" element={<Infographics />} />
           <Route path="/public-knowledge/:id" element={<PublicKnowledgeDetail />} />
 
-
           <Route path="/research/:id" element={<ResearchDetail />} />
           <Route path="/agricultureresearch" element={<AgriculturalResearch />} />
           <Route path="/forums" element={<Forums isAuthenticated={isAuthenticated} />} />
@@ -112,8 +112,6 @@ const AppRouter = () => {
                   <Route path="/admin/update-research/:id" element={<AdminUpdateResearch />} />
                   <Route path="/admin/manage-pk" element={<ManagePublicKnowledge />} />
                   <Route path="/admin/manage-infographics" element={<ManageInfographics />} />
-
-
                 </>
               )}
               {userRole === 'ROLE_EXPERT' && (
@@ -134,6 +132,7 @@ const AppRouter = () => {
             <Route path="*" element={<Navigate to="/login" />} />
           )}
         </Routes>
+        {(userRole !== 'ROLE_ADMIN' && userRole !== 'ROLE_EXPERT') && <Footer />}
       </div>
     </Router>
   );

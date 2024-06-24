@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 import { getResearchById } from '../services/PublicServices';
 import { createComment, createFeedback, getCommentsByResearchID } from '../services/FeedbackService';
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
-import { Drawer, Button, TextField, Typography, Paper, Grid, Avatar, Container, Snackbar, Alert, Fab, Tooltip } from '@mui/material';
+import {
+  Drawer, Button, TextField, Typography, Paper, Grid, Avatar, Container, Snackbar, Alert, Fab, Tooltip,
+} from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import '../index.css';
 
@@ -120,28 +122,56 @@ const ResearchDetail = () => {
   return (
     <Container sx={{ paddingTop: 4, paddingBottom: 4 }}>
       {research ? (
-        <Paper sx={{ padding: 3, marginBottom: 4 }}>
-          <Typography variant="h4" gutterBottom>
-            {research.title}
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            By: {research.author}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            {research.content}
-          </Typography>
-          <div style={{ height: '400px', width: '100%', marginBottom: 20 }}>
-            <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
-              <GoogleMap
-                mapContainerStyle={{ height: "100%", width: "100%" }}
-                center={{ lat: research.latitude, lng: research.longitude }}
-                zoom={15}
+        <>
+          <Paper sx={{ padding: 3, marginBottom: 4 }}>
+            <div style={{ position: 'relative', marginBottom: 20 }}>
+              <img
+                src={`data:image/jpeg;base64,${research.images[0].image}`}
+                alt={research.title}
+                style={{
+                  width: '100%',
+                  maxHeight: '400px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                }}
+              />
+              <Typography
+                variant="h4"
+                sx={{
+                  position: 'absolute',
+                  bottom: 16,
+                  left: 16,
+                  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                }}
               >
-                <MarkerF position={{ lat: research.latitude, lng: research.longitude }} />
-              </GoogleMap>
-            </LoadScript>
-          </div>
-          <div sx={{ marginTop: 4 }}>
+                {research.title}
+              </Typography>
+            </div>
+            <Typography variant="h6" gutterBottom>
+              By: {research.author}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {research.content}
+            </Typography>
+            <div style={{ height: '400px', width: '100%', marginBottom: 20 }}>
+              <Typography variant="h6" gutterBottom>
+                Location
+              </Typography>
+              <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+                <GoogleMap
+                  mapContainerStyle={{ height: '100%', width: '100%' }}
+                  center={{ lat: research.latitude, lng: research.longitude }}
+                  zoom={15}
+                >
+                  <MarkerF position={{ lat: research.latitude, lng: research.longitude }} />
+                </GoogleMap>
+              </LoadScript>
+            </div>
+          </Paper>
+          <Paper sx={{ padding: 3, marginBottom: 4 }}>
             <Typography variant="h5" gutterBottom>
               Comments
             </Typography>
@@ -157,10 +187,7 @@ const ResearchDetail = () => {
                         <div>
                           <Typography variant="body1">{comment.content}</Typography>
                           <Typography variant="body2" color="textSecondary">
-                            {comment.name} - {comment.email} - {comment.phone}
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {new Date(comment.dateSubmitted).toLocaleDateString()}
+                            {comment.name} - {new Date(comment.dateSubmitted).toLocaleDateString()}
                           </Typography>
                         </div>
                       </Grid>
@@ -213,8 +240,8 @@ const ResearchDetail = () => {
                 Submit Comment
               </Button>
             </div>
-          </div>
-          <Tooltip title="Give Feedback" aria-label="give feedback">
+          </Paper>
+          <Tooltip title="Submit Feedback" aria-label="submit feedback">
             <Fab
               color="secondary"
               aria-label="add"
@@ -253,7 +280,7 @@ const ResearchDetail = () => {
               </Button>
             </div>
           </Drawer>
-        </Paper>
+        </>
       ) : (
         <Typography variant="h5" align="center" color="textSecondary">
           Loading...
