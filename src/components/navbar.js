@@ -34,7 +34,7 @@ function NavBar({ userName, onLogout }) {
           <li className="nav-item">
             <NavLink
               exact
-              to="/public-knowledge"
+              to="/Publicknowledge"
               activeClassName="active"
               className="nav-links"
               onClick={handleClick}
@@ -67,7 +67,7 @@ function NavBar({ userName, onLogout }) {
           <li className="nav-item">
             <NavLink
               exact
-              to="/infographics"
+              to="/Infographics"
               activeClassName="active"
               className="nav-links"
               onClick={handleClick}

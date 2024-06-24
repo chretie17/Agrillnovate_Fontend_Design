@@ -43,3 +43,23 @@ export const createFeedback = async (feedbackData) => {
     throw error;
   }
 };
+export const getAllPublicKnowledge = async () => {
+  const response = await axios.get(`${API_URL}/research/public-knowledge`);
+  return response.data;
+};
+
+// Infographics
+export const getAllInfographics = async () => {
+  const response = await axios.get(`${API_URL}/research/infographics`);
+  return response.data;
+};
+export const getPublicKnowledgeById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/research/public-knowledge/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching public knowledge by ID', error);
+    throw error;
+  }
+};
+

@@ -50,9 +50,11 @@ const ThreadComponent = ({ isAuthenticated }) => {
   }
 
   return (
-    <Container>
-      <Typography variant="h4" component="h2" className="mb-4">Thread Details</Typography>
-      <Paper elevation={3} className="p-4 mb-4 bg-gray-50">
+    <Container maxWidth="md" className="py-8">
+      <Typography variant="h4" component="h2" className="mb-8 text-center">
+        Thread Details
+      </Typography>
+      <Paper elevation={3} className="p-6 mb-8 bg-gray-50 rounded-lg shadow-lg">
         {posts.length === 0 ? (
           <Typography>No comments yet</Typography>
         ) : (
@@ -61,26 +63,31 @@ const ThreadComponent = ({ isAuthenticated }) => {
               <Typography>{post.content}</Typography>
               {isAuthenticated && (
                 <Typography variant="caption" className="text-gray-500">
-                  Posted by: {userNames[post.userId]}
+                  Reply by: {userNames[post.userId]}
                 </Typography>
               )}
             </Box>
           ))
         )}
       </Paper>
-      {isAuthenticated && (
+      {isAuthenticated ? (
         <Box>
           <TextField
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             fullWidth
             placeholder="Type your message"
+            variant="outlined"
             className="mb-4"
           />
           <Button variant="contained" color="primary" onClick={handlePostSubmit}>
             Post
           </Button>
         </Box>
+      ) : (
+        <Typography variant="body1" color="textSecondary" align="center" className="mt-4">
+          You must be logged in to comment.
+        </Typography>
       )}
     </Container>
   );

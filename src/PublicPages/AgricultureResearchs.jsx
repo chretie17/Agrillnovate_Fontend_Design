@@ -37,24 +37,24 @@ const AgriculturalResearch = () => {
   const paginatedResearchList = filteredResearchList.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <Container className="min-h-screen flex flex-col justify-between py-10">
-      <div>
-        <Typography variant="h4" className="text-center text-green-800 font-bold mb-8">
+    <div className="min-h-screen flex flex-col">
+      <Container className="flex-grow py-10">
+        <Typography variant="h4" className="text-center text-green-800 font-bold my-8">
           Agricultural Research
         </Typography>
         <div className="mb-8 flex justify-center">
           <input
             type="text"
-            className="search-input p-2 border border-gray-300 rounded-lg w-1/2"
+            className="search-input p-2 border border-gray-300 rounded-lg w-full max-w-md"
             placeholder="Search research..."
             value={searchTerm}
             onChange={handleSearchChange}
           />
         </div>
-        <Grid container spacing={4}>
+        <Grid container spacing={4} justifyContent="center">
           {paginatedResearchList.map((research) => (
             <Grid item xs={12} sm={6} md={4} key={research.researchID}>
-              <Card className="shadow-lg rounded-lg overflow-hidden">
+              <Card className="shadow-lg rounded-lg overflow-hidden h-full">
                 <CardActionArea component={Link} to={`/research/${research.researchID}`}>
                   <CardMedia
                     className="h-48"
@@ -63,11 +63,11 @@ const AgriculturalResearch = () => {
                     image={`data:image/jpeg;base64,${research.images[0].image}`} // Assuming first image
                     title={research.title}
                   />
-                  <CardContent className="p-4">
+                  <CardContent className="p-4 flex flex-col justify-between">
                     <Typography gutterBottom variant="h5" component="div" className="font-bold text-gray-900">
                       {research.title}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p" className="mb-4">
+                    <Typography variant="body2" color="textSecondary" component="p" className="mb-4 flex-grow">
                       {research.content.substring(0, 100)}...
                     </Typography>
                     <div className="text-right">
@@ -81,24 +81,24 @@ const AgriculturalResearch = () => {
             </Grid>
           ))}
         </Grid>
-      </div>
-      <div className="flex justify-center mt-8">
-        <button
-          onClick={() => setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg mr-2 disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
-    </Container>
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg mr-2 disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      </Container>
+    </div>
   );
 };
 

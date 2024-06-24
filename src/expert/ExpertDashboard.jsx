@@ -59,7 +59,7 @@ const ExpertDashboard = () => {
       const data = await getResearchProjectsByExpert();
       setResearchProjects(data);
       if (data.length > 0) {
-        fetchCommentsAndFeedback(data[0].researchID);
+        handleProjectSelect(data[0]); // Select the first project by default
       }
     } catch (error) {
       console.error('Error fetching research projects', error);
@@ -200,6 +200,11 @@ const ExpertDashboard = () => {
     ));
   };
 
+  const handleProjectSelect = (project) => {
+    setSelectedProject(project);
+    fetchCommentsAndFeedback(project.researchID);
+  };
+
   if (loadError) {
     return <div>Error loading Google Maps API</div>;
   }
@@ -275,7 +280,7 @@ const ExpertDashboard = () => {
             <Typography variant="h6">My Published Research Projects</Typography>
             <List>
               {researchProjects.map((project, index) => (
-                <ListItem key={index}>
+                <ListItem key={index} onClick={() => handleProjectSelect(project)} button>
                   <ListItemAvatar>
                     <Avatar>{project.title.charAt(0)}</Avatar>
                   </ListItemAvatar>

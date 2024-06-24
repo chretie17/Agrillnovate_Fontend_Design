@@ -198,7 +198,82 @@ export const createComment = async (commentDTO) => {
   const response = await axios.post(`${API_URL}/comments`, commentDTO);
   return response.data;
 };
+// Public Knowledge services
+export const getPublicKnowledge = async () => {
+  const response = await axios.get(`${API_URL}/public-knowledge`);
+  return response.data;
+};
 
+export const createPublicKnowledge = async (data) => {
+  const formData = new FormData();
+  formData.append('title', data.title);
+  formData.append('content', data.content); // Ensure this is submitted as a string
+  formData.append('image', data.image);
+  formData.append('datePublished', data.datePublished);
+  
+  const response = await axios.post(`${API_URL}/public-knowledge`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const updatePublicKnowledge = async (id, data) => {
+  const formData = new FormData();
+  formData.append('title', data.title);
+  formData.append('content', data.content); // Ensure this is submitted as a string
+  formData.append('image', data.image);
+  formData.append('datePublished', data.datePublished);
+  
+  const response = await axios.put(`${API_URL}/public-knowledge/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+export const deletePublicKnowledge = async (id) => {
+  const response = await axios.delete(`${API_URL}/public-knowledge/${id}`);
+  return response.data;
+};
+// Infographic services
+// Infographics
+export const getInfographics = async () => {
+  const response = await axios.get(`${API_URL}/infographics`);
+  return response.data;
+};
+
+export const createInfographic = async (data) => {
+  const formData = new FormData();
+  formData.append('title', data.title);
+  formData.append('image', data.image);
+  formData.append('description', data.description);
+  const response = await axios.post(`${API_URL}/infographics`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const updateInfographic = async (id, data) => {
+  const formData = new FormData();
+  formData.append('title', data.title);
+  formData.append('image', data.image);
+  formData.append('description', data.description);
+  const response = await axios.put(`${API_URL}/infographics/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const deleteInfographic = async (id) => {
+  const response = await axios.delete(`${API_URL}/infographics/${id}`);
+  return response.data;
+};
 export {
   setAuthToken,
   getUsers,

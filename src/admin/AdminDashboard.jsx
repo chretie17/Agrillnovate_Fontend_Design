@@ -15,6 +15,7 @@ import PostsTable from './forumstables/PostsTable';
 import AnalyticsChart from './AnalyticsChart';
 import CommentsTable from './CommentsTable';
 import NotificationsList from './NotificationsList';
+
 import {
   getUsers,
   getResearch,

@@ -4,15 +4,42 @@ import { loginUser, setAuthToken } from '../services/api';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jwtDecode } from 'jwt-decode';
-import { Box, Button, Container, TextField, Typography, Avatar, CssBaseline, Paper } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Avatar,
+  CssBaseline,
+  Paper,
+  Checkbox,
+  FormControlLabel,
+  Link,
+} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { FaEye, FaEyeSlash } from 'react-icons/fa6';
+import GoogleSvg from '../assets/icons8-google.svg';
 
-const theme = createTheme();
+const theme = createTheme({
+  typography: {
+    fontFamily: '"Poppins", sans-serif',
+  },
+  palette: {
+    primary: {
+      main: '#000000',
+    },
+    secondary: {
+      main: '#E9E9E9',
+    },
+  },
+});
 
 const Login = ({ setAuthenticated, setUserRole, setUserName }) => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -40,7 +67,7 @@ const Login = ({ setAuthenticated, setUserRole, setUserName }) => {
         localStorage.setItem('userName', userName); // Store user name
 
         toast.success('Login successful! Redirecting...');
-        
+
         setTimeout(() => {
           switch (userRole) {
             case 'ROLE_ADMIN':
@@ -53,7 +80,7 @@ const Login = ({ setAuthenticated, setUserRole, setUserName }) => {
               navigate('/home');
               break;
             case 'ROLE_COMMUNITYMEMBER':
-              navigate('/community-dashboard');
+              navigate('/home');
               break;
             default:
               navigate('/dashboard');
@@ -98,12 +125,22 @@ const Login = ({ setAuthenticated, setUserRole, setUserName }) => {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               id="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                endAdornment: showPassword ? <FaEyeSlash onClick={() => setShowPassword(!showPassword)} /> : <FaEye onClick={() => setShowPassword(!showPassword)} />
+              }}
             />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember for 30 days"
+            />
+            <Link href="#" variant="body2" sx={{ display: 'block', textAlign: 'right', mb: 2 }}>
+              Forgot password?
+            </Link>
             <Button
               type="submit"
               fullWidth
@@ -112,7 +149,21 @@ const Login = ({ setAuthenticated, setUserRole, setUserName }) => {
             >
               Login
             </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              startIcon={<img src={GoogleSvg} alt="Google icon" style={{ width: '20px' }} />}
+              sx={{ mb: 2, bgcolor: '#F0F0F0', color: '#000' }}
+              onClick={() => {
+                // Implement Google login logic
+              }}
+            >
+              Login with Google
+            </Button>
           </Box>
+          <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+            Don't have an account? <Link href="#">Sign Up</Link>
+          </Typography>
         </Paper>
         <ToastContainer />
       </Container>

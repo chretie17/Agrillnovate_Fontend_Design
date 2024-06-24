@@ -38,22 +38,22 @@ const Forums = ({ isAuthenticated }) => {
   };
 
   return (
-    <Container className="min-h-screen">
-      <Typography variant="h4" component="h1" className="text-brand mb-4">
+    <Container maxWidth="md" className="min-h-screen py-8">
+      <Typography variant="h4" component="h1" className="text-center mb-8">
         Forum
       </Typography>
       {error && <Typography color="error">{error}</Typography>}
       {isAuthenticated && (
-        <Paper elevation={3} className="p-4 mb-4 bg-gray-50">
+        <Paper elevation={3} className="p-6 mb-8 bg-gray-50 rounded-lg shadow-lg">
           <Box display="flex" alignItems="center">
             <TextField
               fullWidth
               label="Thread title"
               value={newThreadTitle}
               onChange={(e) => setNewThreadTitle(e.target.value)}
-              className="form-input"
+              variant="outlined"
             />
-            <Button onClick={handleCreateThread} variant="contained" className="btn-brand ml-2">
+            <Button onClick={handleCreateThread} variant="contained" className="ml-2" color="primary">
               Create Thread
             </Button>
           </Box>

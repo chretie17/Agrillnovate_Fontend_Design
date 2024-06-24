@@ -140,3 +140,45 @@ button:hover {
 .error {
   @apply text-red-500;
 }
+/* Ensure main content does not go behind the sidebar for admin and expert */
+.main-content-admin,
+.main-content-expert {
+  margin-left: 250px; /* Same as sidebar width */
+  padding: 20px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(0);
+  }
+
+  .main-content-admin,
+  .main-content-expert {
+    margin-left: 0;
+  }
+
+  .toggle-button {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #2e7d32;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1100;
+  }
+}
+
+@media (min-width: 769px) {
+  .toggle-button {
+    display: none;
+  }
+}
