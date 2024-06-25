@@ -8,12 +8,32 @@ import { GoogleMap, LoadScript, Marker, StandaloneSearchBox } from '@react-googl
 const mapContainerStyle = {
   width: '100%',
   height: '400px',
+  position: 'relative',
 };
 
 const initialCenter = {
   lat: -1.970579,
   lng: 30.104429,
 };
+
+const searchBoxStyle = {
+  boxSizing: 'border-box',
+  border: '1px solid transparent',
+  width: '300px',
+  height: '40px',
+  padding: '0 12px',
+  borderRadius: '3px',
+  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+  fontSize: '16px',
+  outline: 'none',
+  textOverflow: 'ellipses',
+  position: 'absolute',
+  top: '10px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+};
+
+const libraries = ['places'];
 
 const AddResearch = () => {
   const [title, setTitle] = useState('');
@@ -154,37 +174,23 @@ const AddResearch = () => {
         )}
         <Box mt={3}>
           <Typography variant="h6">Select Research Location</Typography>
-          <LoadScript googleMapsApiKey="AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg" libraries={['places']}>
-            <StandaloneSearchBox
-              onLoad={(ref) => (searchBoxRef.current = ref)}
-              onPlacesChanged={handlePlacesChanged}
-            >
-              <input
-                type="text"
-                placeholder="Search for places"
-                style={{
-                  boxSizing: `border-box`,
-                  border: `1px solid transparent`,
-                  width: `240px`,
-                  height: `32px`,
-                  padding: `0 12px`,
-                  borderRadius: `3px`,
-                  boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-                  fontSize: `14px`,
-                  outline: `none`,
-                  textOverflow: `ellipses`,
-                  position: "absolute",
-                  left: "50%",
-                  marginLeft: "-120px"
-                }}
-              />
-            </StandaloneSearchBox>
+          <LoadScript googleMapsApiKey="YOUR_API_KEY_HERE" libraries={libraries}>
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               center={location || initialCenter}
               zoom={8}
               onClick={handleMapClick}
             >
+              <StandaloneSearchBox
+                onLoad={(ref) => (searchBoxRef.current = ref)}
+                onPlacesChanged={handlePlacesChanged}
+              >
+                <input
+                  type="text"
+                  placeholder="Search for places"
+                  style={searchBoxStyle}
+                />
+              </StandaloneSearchBox>
               {location && <Marker position={location} />}
             </GoogleMap>
           </LoadScript>

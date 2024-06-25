@@ -240,6 +240,29 @@ const ExpertDashboard = () => {
         </Box>
       </Drawer>
       <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Paper elevation={3} sx={{ padding: 2 }}>
+            <Typography variant="h6">My Published Research Projects</Typography>
+            <List>
+              {researchProjects.map((project, index) => (
+                <ListItem key={index} onClick={() => handleProjectSelect(project)} button>
+                  <ListItemAvatar>
+                    <Avatar>{project.title.charAt(0)}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={`${project.researchID}: ${project.title}`} secondary={`Author: ${project.author}`} />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="edit" onClick={() => handleEditOpen(project)}>
+                      <Edit />
+                    </IconButton>
+                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(project.researchID)}>
+                      <Delete />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </Grid>
         <Grid item xs={12} sm={6}>
           <Paper elevation={3} sx={{ padding: 2 }}>
             <Typography variant="h6">Comments Overview</Typography>
@@ -273,29 +296,6 @@ const ExpertDashboard = () => {
               </Pie>
               <Tooltip />
             </PieChart>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper elevation={3} sx={{ padding: 2 }}>
-            <Typography variant="h6">My Published Research Projects</Typography>
-            <List>
-              {researchProjects.map((project, index) => (
-                <ListItem key={index} onClick={() => handleProjectSelect(project)} button>
-                  <ListItemAvatar>
-                    <Avatar>{project.title.charAt(0)}</Avatar>
-                  </ListItemAvatar>
-                  <ListItemText primary={`${project.researchID}: ${project.title}`} secondary={`Author: ${project.author}`} />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="edit" onClick={() => handleEditOpen(project)}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(project.researchID)}>
-                      <Delete />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
           </Paper>
         </Grid>
         <Grid item xs={12}>

@@ -67,8 +67,7 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
                 <>
                   <li><Link to="/expert-dashboard" className="flex items-center"><FaResearchgate className="mr-2" /><span>Dashboard</span></Link></li>
                   <li><Link to="/expert/add-research" className="flex items-center"><FaResearchgate className="mr-2" /><span>Publish Your Research</span></Link></li>
-                  <li><Link to="/expert/manage-my-research" className="flex items-center"><FaChartPie className="mr-2" /><span>Manage Research</span></Link></li>
-                  <li><Link to="/profile" className="flex items-center"><FaUser className="mr-2" /><span>Profile</span></Link></li>
+          
                 </>
               )}
               {(localUserRole === 'ROLE_FARMER' || localUserRole === 'ROLE_COMMUNITYMEMBER') && (

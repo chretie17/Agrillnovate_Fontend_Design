@@ -5,8 +5,13 @@ import {
   Card,
   CardContent,
   Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Badge,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import UsersTable from './UsersTable';
 import ResearchTable from './ResearchTable';
 import FeedbackTable from './FeedbackTable';
@@ -14,16 +19,8 @@ import ThreadsTable from './forumstables/ThreadsTable';
 import PostsTable from './forumstables/PostsTable';
 import AnalyticsChart from './AnalyticsChart';
 import CommentsTable from './CommentsTable';
-import NotificationsList from './NotificationsList';
 
-import {
-  getUsers,
-  getResearch,
-  getFeedback,
-  getThreads,
-  getPosts,
-  getComments,
-} from '../services/AdminService';
+import { getUsers, getResearch, getFeedback, getThreads, getPosts, getComments, getNotifications } from '../services/AdminService';
 
 const useStyles = makeStyles(() => ({
   card: {
@@ -36,13 +33,21 @@ const useStyles = makeStyles(() => ({
     fontWeight: 600,
     marginBottom: 16,
   },
-  notificationButtonContainer: {
-    position: 'relative',
-  },
-  notificationButton: {
+  notificationIcon: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 16,
+    right: 16,
+    color: '#fff',
+    backgroundColor: 'green',
+    borderRadius: '50%',
+    padding: 12,
+    transform: 'rotate(45deg)', // Adds the angle
+    '&:hover': {
+      backgroundColor: '#228B22', // Darker green on hover
+    },
+  },
+  menu: {
+    mt: 1.5,
   },
 }));
 
@@ -54,6 +59,8 @@ const AdminDashboard = () => {
   const [threads, setThreads] = useState([]);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +71,7 @@ const AdminDashboard = () => {
         const threadsData = await getThreads();
         const postsData = await getPosts();
         const commentsData = await getComments();
+        const notificationsData = await getNotifications();
 
         setUsers(usersData);
         setResearch(researchData);
@@ -71,6 +79,7 @@ const AdminDashboard = () => {
         setThreads(threadsData);
         setPosts(postsData);
         setComments(commentsData);
+        setNotifications(notificationsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -79,11 +88,44 @@ const AdminDashboard = () => {
     fetchData();
   }, []);
 
+  const handleNotificationClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <div className={classes.notificationButtonContainer}>
-        <NotificationsList />
-      </div>
+      <IconButton className={classes.notificationIcon} onClick={handleNotificationClick}>
+        <Badge badgeContent={notifications.length} color="error">
+          <NotificationsIcon fontSize="large" style={{ transform: 'rotate(-45deg)' }} /> {/* Rotate icon back */}
+        </Badge>
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleNotificationClose}
+        className={classes.menu}
+      >
+        {notifications.length === 0 ? (
+          <MenuItem disabled>No notifications available</MenuItem>
+        ) : (
+          notifications.map((notification) => (
+            <MenuItem key={notification.id} onClick={handleNotificationClose}>
+              <Typography variant="body2">
+                {notification.message}
+                <br />
+                <Typography variant="caption" color="textSecondary">
+                  {new Date(notification.timestamp).toLocaleString()}
+                </Typography>
+              </Typography>
+            </MenuItem>
+          ))
+        )}
+      </Menu>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Card className={classes.card}>

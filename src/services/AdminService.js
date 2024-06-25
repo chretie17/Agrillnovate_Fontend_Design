@@ -274,6 +274,7 @@ export const deleteInfographic = async (id) => {
   const response = await axios.delete(`${API_URL}/infographics/${id}`);
   return response.data;
 };
+
 export {
   setAuthToken,
   getUsers,

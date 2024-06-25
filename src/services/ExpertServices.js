@@ -130,11 +130,13 @@ export const getCommentsStats = async () => {
 };
 
 export const getFeedbackStats = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/research/feedbacks/stats`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching feedback stats', error);
-    throw error;
-  }
+  // Return dummy data instead of making an API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        { name: 'Rwamagana', count: 2 },
+        { name: 'Ibirayi', count: 2 },
+      ]);
+    }, 1000);
+  });
 };

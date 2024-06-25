@@ -162,7 +162,7 @@ const Login = ({ setAuthenticated, setUserRole, setUserName }) => {
             </Button>
           </Box>
           <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-            Don't have an account? <Link href="#">Sign Up</Link>
+            Don't have an account? <Link href="signup">Sign Up</Link>
           </Typography>
         </Paper>
         <ToastContainer />

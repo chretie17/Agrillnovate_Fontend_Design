@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ForumService from '../services/ForumService';
+import { connectWebSocket, disconnectWebSocket, sendMessage } from '../services/WebSocketService';
 import { Container, Typography, Paper, TextField, Button, Box } from '@mui/material';
 
 const ThreadComponent = ({ isAuthenticated }) => {
@@ -11,19 +12,16 @@ const ThreadComponent = ({ isAuthenticated }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchPostsAndUsers = async () => {
       try {
         const response = await ForumService.getPosts(threadId);
         const postsData = response.data;
         setPosts(postsData);
 
         const userIds = [...new Set(postsData.map(post => post.userId))];
-        const userNamesMap = {};
-        for (let userId of userIds) {
-          const user = await ForumService.getUserById(userId);
-          userNamesMap[userId] = user.name;
-        }
+        const userNamesMap = await fetchUserNames(userIds);
         setUserNames(userNamesMap);
+
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch posts', error);
@@ -31,15 +29,50 @@ const ThreadComponent = ({ isAuthenticated }) => {
       }
     };
 
-    fetchPosts();
-  }, [threadId]);
+    const handleNewPost = (message) => {
+      if (message.threadId === threadId) {
+        setPosts(prevPosts => [...prevPosts, message.newPost]);
+        if (!userNames[message.newPost.userId]) {
+          fetchUserNames([message.newPost.userId]).then(userNamesMap => {
+            setUserNames(prevUserNames => ({
+              ...prevUserNames,
+              ...userNamesMap
+            }));
+          });
+        }
+      }
+    };
+
+    fetchPostsAndUsers();
+    connectWebSocket(handleNewPost);
+
+    return () => {
+      disconnectWebSocket();
+    };
+  }, [threadId, userNames]);
+
+  const fetchUserNames = async (userIds) => {
+    const userNamesMap = {};
+    const userPromises = userIds.map(userId =>
+      ForumService.getUserById(userId).then(user => {
+        userNamesMap[userId] = user.name;
+      })
+    );
+    await Promise.all(userPromises);
+    return userNamesMap;
+  };
 
   const handlePostSubmit = async () => {
     try {
-      await ForumService.createPost(threadId, newPost);
+      const response = await ForumService.createPost(threadId, newPost);
+      const newPostData = response.data;
+
+      sendMessage('/topic/posts', {
+        threadId,
+        newPost: newPostData
+      });
+
       setNewPost('');
-      const response = await ForumService.getPosts(threadId);
-      setPosts(response.data);
     } catch (error) {
       console.error('Failed to create post', error);
     }
