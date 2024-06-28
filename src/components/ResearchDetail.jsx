@@ -120,44 +120,34 @@ const ResearchDetail = () => {
   };
 
   return (
-    <Container sx={{ paddingTop: 4, paddingBottom: 4 }}>
+    <Container className="pt-8 pb-8">
       {research ? (
         <>
-          <Paper sx={{ padding: 3, marginBottom: 4 }}>
-            <div style={{ position: 'relative', marginBottom: 20 }}>
+          <Paper className="p-6 mb-8">
+            <Typography variant="h6" className="mb-4">
+              Category: {research.category}
+            </Typography>
+            <div className="relative mb-8 image-container">
               <img
                 src={`data:image/jpeg;base64,${research.images[0].image}`}
                 alt={research.title}
-                style={{
-                  width: '100%',
-                  maxHeight: '400px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                }}
+                className="w-full h-full object-cover rounded-md"
               />
               <Typography
                 variant="h4"
-                sx={{
-                  position: 'absolute',
-                  bottom: 16,
-                  left: 16,
-                  backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                  color: 'white',
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                }}
+                className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white p-2 rounded"
               >
                 {research.title}
               </Typography>
             </div>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" className="mb-4">
               By: {research.author}
             </Typography>
-            <Typography variant="body1" gutterBottom>
-              {research.content}
+            <Typography variant="body1" className="mb-4 content-text">
+              <div dangerouslySetInnerHTML={{ __html: research.content }} />
             </Typography>
-            <div style={{ height: '400px', width: '100%', marginBottom: 20 }}>
-              <Typography variant="h6" gutterBottom>
+            <div className="h-96 w-full mb-8">
+              <Typography variant="h6" className="mb-4">
                 Location
               </Typography>
               <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
@@ -171,17 +161,17 @@ const ResearchDetail = () => {
               </LoadScript>
             </div>
           </Paper>
-          <Paper sx={{ padding: 3, marginBottom: 4 }}>
-            <Typography variant="h5" gutterBottom>
+          <Paper className="p-6 mb-8">
+            <Typography variant="h5" className="mb-4">
               Comments
             </Typography>
             {comments.length > 0 ? (
               <Grid container direction="column" spacing={2}>
                 {comments.map((comment, index) => (
                   <Grid item key={index}>
-                    <Paper sx={{ padding: 2, marginBottom: 2 }}>
+                    <Paper className="p-4 mb-4">
                       <Grid container alignItems="center">
-                        <Avatar sx={{ marginRight: 2 }}>
+                        <Avatar className="mr-4">
                           {comment.name[0].toUpperCase()}
                         </Avatar>
                         <div>
@@ -246,7 +236,7 @@ const ResearchDetail = () => {
               color="secondary"
               aria-label="add"
               onClick={() => setFeedbackDrawerOpen(true)}
-              sx={{ position: 'fixed', right: 20, bottom: 20 }}
+              className="fixed right-5 bottom-5"
             >
               <AddIcon />
             </Fab>
@@ -256,8 +246,8 @@ const ResearchDetail = () => {
             open={feedbackDrawerOpen}
             onClose={() => setFeedbackDrawerOpen(false)}
           >
-            <div style={{ width: 300, padding: 20 }}>
-              <Typography variant="h6" gutterBottom>
+            <div className="w-72 p-5">
+              <Typography variant="h6" className="mb-4">
                 Submit Feedback
               </Typography>
               <TextField
@@ -273,7 +263,7 @@ const ResearchDetail = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleFeedbackSubmit}
-                style={{ marginTop: 20 }}
+                className="mt-4"
                 fullWidth
               >
                 Submit
@@ -287,7 +277,7 @@ const ResearchDetail = () => {
         </Typography>
       )}
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} className="w-full">
           {snackbarMessage}
         </Alert>
       </Snackbar>

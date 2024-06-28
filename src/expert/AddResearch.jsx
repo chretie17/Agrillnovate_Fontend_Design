@@ -1,9 +1,11 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { Container, TextField, Button, Box, Typography, Grid } from '@mui/material';
-import { createResearch } from '../services/ResearchService';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Container, TextField, Button, Box, Typography, Grid, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { createResearch, getCategories } from '../services/ResearchService';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GoogleMap, LoadScript, Marker, StandaloneSearchBox } from '@react-google-maps/api';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 
 const mapContainerStyle = {
   width: '100%',
@@ -35,15 +37,47 @@ const searchBoxStyle = {
 
 const libraries = ['places'];
 
+const CustomToolbar = () => (
+  <div id="toolbar">
+    <select className="ql-header" defaultValue="" onChange={(e) => e.persist()}>
+      <option value="1"></option>
+      <option value="2"></option>
+      <option value=""></option>
+    </select>
+    <button className="ql-bold"></button>
+    <button className="ql-italic"></button>
+    <button className="ql-underline"></button>
+    <button className="ql-image"></button>
+  </div>
+);
+
 const AddResearch = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [datePublished, setDatePublished] = useState('');
   const [content, setContent] = useState('');
-  const [images, setImages] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState('');
   const [location, setLocation] = useState(null);
+  const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [newCategory, setNewCategory] = useState('');
   const searchBoxRef = useRef(null);
+  const quillRef = useRef(null); // Ref for Quill editor
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,13 +89,18 @@ const AddResearch = () => {
       content,
       latitude: location ? location.lat : null,
       longitude: location ? location.lng : null,
+      category: selectedCategory === 'new' ? newCategory : selectedCategory, // Send selected category or new category
     };
 
     const formData = new FormData();
     formData.append('research', new Blob([JSON.stringify(researchData)], { type: 'application/json' }));
 
-    images.forEach((image) => {
-      formData.append('images', image);
+    if (thumbnail) {
+      formData.append('thumbnail', thumbnail);
+    }
+
+    images.forEach((image, index) => {
+      formData.append(`images`, image);
     });
 
     try {
@@ -72,21 +111,44 @@ const AddResearch = () => {
       setAuthor('');
       setDatePublished('');
       setContent('');
+      setThumbnail(null);
+      setThumbnailPreview('');
       setImages([]);
-      setImagePreviews([]);
       setLocation(null);
+      setSelectedCategory('');
+      setNewCategory('');
     } catch (error) {
       console.error('Error submitting research:', error);
       toast.error('Error submitting research');
     }
   };
 
-  const handleImageChange = (event) => {
-    const files = Array.from(event.target.files);
-    setImages(files);
+  const handleThumbnailChange = (event) => {
+    const file = event.target.files[0];
+    setThumbnail(file);
+    setThumbnailPreview(URL.createObjectURL(file));
+  };
 
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews(previews);
+  const handleImageUpload = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = () => {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const quill = quillRef.current.getEditor();
+        let range = quill.getSelection();
+        if (!range) {
+          range = { index: quill.getLength() - 1 }; // Set range to the end if no selection
+        }
+        quill.insertEmbed(range.index, 'image', reader.result);
+      };
+      reader.readAsDataURL(file);
+      setImages((prevImages) => [...prevImages, file]);
+    };
   };
 
   const handleMapClick = useCallback((event) => {
@@ -147,34 +209,68 @@ const AddResearch = () => {
           value={datePublished}
           onChange={(e) => setDatePublished(e.target.value)}
         />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="content"
-          label="Content"
-          name="content"
-          multiline
-          rows={4}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <Button variant="contained" component="label" sx={{ mt: 2 }}>
-          Upload Images
-          <input type="file" hidden multiple onChange={handleImageChange} />
-        </Button>
-        {imagePreviews.length > 0 && (
-          <Grid container spacing={2} sx={{ mt: 2 }}>
-            {imagePreviews.map((preview, index) => (
-              <Grid item xs={3} key={index}>
-                <img src={preview} alt={`Preview ${index}`} style={{ width: '100%' }} />
-              </Grid>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="category-label">Category</InputLabel>
+          <Select
+            labelId="category-label"
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            label="Category"
+          >
+            {categories.map((category, index) => (
+              <MenuItem key={index} value={category}>
+                {category}
+              </MenuItem>
             ))}
-          </Grid>
+            <MenuItem value="new">Create New Category</MenuItem>
+          </Select>
+        </FormControl>
+        {selectedCategory === 'new' && (
+          <TextField
+            margin="normal"
+            fullWidth
+            id="newCategory"
+            label="New Category"
+            name="newCategory"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+          />
+        )}
+        <Typography variant="h6" gutterBottom>
+          Content
+        </Typography>
+        <ReactQuill
+          ref={quillRef} // Attach the ref to Quill editor
+          theme="snow"
+          value={content}
+          onChange={setContent}
+          modules={{
+            toolbar: {
+              container: "#toolbar",
+              handlers: {
+                image: handleImageUpload,
+              },
+            },
+          }}
+          style={{ marginBottom: '1rem' }}
+        />
+        <CustomToolbar />
+        <Button variant="contained" component="label" sx={{ mt: 2 }}>
+          Upload Thumbnail
+          <input type="file" hidden onChange={handleThumbnailChange} />
+        </Button>
+        {thumbnailPreview && (
+          <Box mt={2}>
+            <img src={thumbnailPreview} alt="Thumbnail Preview" style={{ width: '100%' }} />
+          </Box>
         )}
         <Box mt={3}>
           <Typography variant="h6">Select Research Location</Typography>
-          <LoadScript googleMapsApiKey="YOUR_API_KEY_HERE" libraries={libraries}>
+          <LoadScript
+            googleMapsApiKey="AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg" // Make sure to replace with your actual API key
+            libraries={libraries}
+          >
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               center={location || initialCenter}

@@ -73,6 +73,28 @@ const deleteResearch = async (id) => {
   }
 };
 
+// Get distinct categories from research
+const getCategories = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/categories`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+};
+
+// Create new category (if applicable)
+const createCategory = async (category) => {
+  try {
+    const response = await axios.post(`${API_URL}/categories`, { category });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating category:', error);
+    throw error;
+  }
+};
+
 export {
   setAuthToken,
   getAllResearch,
@@ -80,4 +102,6 @@ export {
   createResearch,
   updateResearch,
   deleteResearch,
+  getCategories,
+  createCategory
 };

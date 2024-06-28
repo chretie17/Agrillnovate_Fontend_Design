@@ -1,18 +1,21 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Container, Grid, Paper, Typography, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Avatar,
   ListItemAvatar, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, Card, CardMedia, Drawer, Badge, Box,
-  Alert
+  Alert, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import { Edit, Delete, Notifications } from '@mui/icons-material';
 import {
   getResearchProjectsByExpert, getNotifications, updateResearchProject, deleteResearchProject,
-  getCommentsStats, getFeedbackStats, getCommentsByResearchId, getFeedbackByResearchId
+  getCommentsStats, getFeedbackStats, getCommentsByResearchId, getFeedbackByResearchId, createCategory
 } from '../services/ExpertServices';
+import { getCategories } from '../services/ResearchService';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { PieChart, Pie, Tooltip, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { connectWebSocket, disconnectWebSocket } from '../services/WebSocketService';
 import useGoogleMapsLoader from '../hooks/useGoogleMapsLoader'; // Import the custom hook
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 
 const containerStyle = {
   width: '100%',
@@ -26,6 +29,20 @@ const center = {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
+const CustomToolbar = () => (
+  <div id="toolbar">
+    <select className="ql-header" defaultValue="" onChange={(e) => e.persist()}>
+      <option value="1"></option>
+      <option value="2"></option>
+      <option value=""></option>
+    </select>
+    <button className="ql-bold"></button>
+    <button className="ql-italic"></button>
+    <button className="ql-underline"></button>
+    <button className="ql-image"></button>
+  </div>
+);
+
 const ExpertDashboard = () => {
   const [researchProjects, setResearchProjects] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -35,10 +52,13 @@ const ExpertDashboard = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [formValues, setFormValues] = useState({ title: '', author: '', content: '', latitude: '', longitude: '' });
+  const [formValues, setFormValues] = useState({ title: '', author: '', content: '', latitude: '', longitude: '', category: '' });
   const [newImages, setNewImages] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [updateError, setUpdateError] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState('');
+  const quillRef = useRef(null); // Ref for Quill editor
 
   const { isLoaded, loadError } = useGoogleMapsLoader(); // Use the custom hook
 
@@ -47,6 +67,7 @@ const ExpertDashboard = () => {
     fetchNotifications();
     fetchCommentsStats();
     fetchFeedbackStats();
+    fetchCategories();
     connectWebSocket(handleNotificationReceived);
 
     return () => {
@@ -93,6 +114,15 @@ const ExpertDashboard = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories', error);
+    }
+  };
+
   const fetchCommentsAndFeedback = async (researchId) => {
     try {
       const commentsData = await getCommentsByResearchId(researchId);
@@ -111,11 +141,12 @@ const ExpertDashboard = () => {
   const handleEditOpen = (project) => {
     setSelectedProject(project);
     setFormValues({
-      title: project.title,
-      author: project.author,
-      content: project.content,
-      latitude: project.latitude,
-      longitude: project.longitude
+      title: project.title || '',
+      author: project.author || '',
+      content: project.content || '',
+      latitude: project.latitude || '',
+      longitude: project.longitude || '',
+      category: project.category || ''
     });
     setEditDialogOpen(true);
   };
@@ -123,9 +154,10 @@ const ExpertDashboard = () => {
   const handleEditClose = () => {
     setEditDialogOpen(false);
     setSelectedProject(null);
-    setFormValues({ title: '', author: '', content: '', latitude: '', longitude: '' });
+    setFormValues({ title: '', author: '', content: '', latitude: '', longitude: '', category: '' });
     setNewImages([]);
     setUpdateError('');
+    setNewCategory('');
   };
 
   const handleFormChange = (event) => {
@@ -133,8 +165,39 @@ const ExpertDashboard = () => {
     setFormValues({ ...formValues, [name]: value });
   };
 
+  const handleCategoryChange = (event) => {
+    setFormValues({ ...formValues, category: event.target.value });
+    setNewCategory('');
+  };
+
+  const handleNewCategoryChange = (event) => {
+    setNewCategory(event.target.value);
+  };
+
   const handleImageChange = (event) => {
     setNewImages(event.target.files);
+  };
+
+  const handleImageUpload = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = () => {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const quill = quillRef.current.getEditor();
+        let range = quill.getSelection();
+        if (!range) {
+          range = { index: quill.getLength() - 1 }; // Set range to the end if no selection
+        }
+        quill.insertEmbed(range.index, 'image', reader.result);
+      };
+      reader.readAsDataURL(file);
+      setNewImages((prevImages) => [...prevImages, file]);
+    };
   };
 
   const handleMapClick = (event) => {
@@ -146,36 +209,49 @@ const ExpertDashboard = () => {
   };
 
   const handleUpdate = async () => {
-    if (!newImages.length) {
-      setUpdateError('Please add new images for the update to work.');
-      return;
-    }
-
-    if (validateForm()) {
-      if (selectedProject) {
-        try {
-          await updateResearchProject(selectedProject.researchID, formValues, newImages);
-          fetchResearchProjects();
-          handleEditClose();
-        } catch (error) {
-          console.error('Error updating research project', error);
+    if (selectedProject) {
+      try {
+        const formData = new FormData();
+        const updatedFields = {};
+  
+        if (formValues.title) updatedFields.title = formValues.title;
+        if (formValues.author) updatedFields.author = formValues.author;
+        if (formValues.content) updatedFields.content = formValues.content;
+        if (formValues.latitude) updatedFields.latitude = formValues.latitude;
+        if (formValues.longitude) updatedFields.longitude = formValues.longitude;
+        updatedFields.category = formValues.category === 'new' ? newCategory : formValues.category;
+  
+        formData.append('research', new Blob([JSON.stringify(updatedFields)], { type: 'application/json' }));
+  
+        if (newImages.length > 0) {
+          Array.from(newImages).forEach(file => formData.append('images', file));
         }
+  
+        await updateResearchProject(selectedProject.researchID, formData);
+        fetchResearchProjects();
+        handleEditClose();
+      } catch (error) {
+        console.error('Error updating research project', error);
+        setUpdateError('Error updating research project. Please try again.');
       }
     }
   };
+  
+  
 
   const validateForm = () => {
-    const { title, author, content, latitude, longitude } = formValues;
-    if (!title || !author || !content || !latitude || !longitude) {
-      alert('All fields are required');
+    const { latitude, longitude } = formValues;
+    if (latitude && isNaN(latitude)) {
+      alert('Latitude must be a valid number');
       return false;
     }
-    if (isNaN(latitude) || isNaN(longitude)) {
-      alert('Latitude and Longitude must be valid numbers');
+    if (longitude && isNaN(longitude)) {
+      alert('Longitude must be a valid number');
       return false;
     }
     return true;
   };
+  
 
   const handleDelete = async (id) => {
     try {
@@ -243,11 +319,26 @@ const ExpertDashboard = () => {
         <Grid item xs={12}>
           <Paper elevation={3} sx={{ padding: 2 }}>
             <Typography variant="h6">My Published Research Projects</Typography>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="category-sort-label">Sort by Category</InputLabel>
+              <Select
+                labelId="category-sort-label"
+                id="category-sort"
+                value={formValues.category}
+                onChange={handleCategoryChange}
+                label="Sort by Category"
+              >
+                <MenuItem value="">All</MenuItem>
+                {categories.map((category, index) => (
+                  <MenuItem key={index} value={category}>{category}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <List>
-              {researchProjects.map((project, index) => (
+              {researchProjects.filter(project => !formValues.category || project.category === formValues.category).map((project, index) => (
                 <ListItem key={index} onClick={() => handleProjectSelect(project)} button>
                   <ListItemAvatar>
-                    <Avatar>{project.title.charAt(0)}</Avatar>
+                    <Avatar>{project.title ? project.title.charAt(0) : '?'}</Avatar>
                   </ListItemAvatar>
                   <ListItemText primary={`${project.researchID}: ${project.title}`} secondary={`Author: ${project.author}`} />
                   <ListItemSecondaryAction>
@@ -352,16 +443,25 @@ const ExpertDashboard = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                label="Content"
-                name="content"
+              <Typography variant="h6" gutterBottom>
+                Content
+              </Typography>
+              <ReactQuill
+                ref={quillRef} // Attach the ref to Quill editor
+                theme="snow"
                 value={formValues.content}
-                onChange={handleFormChange}
-                fullWidth
-                multiline
-                rows={4}
-                required
+                onChange={(content) => setFormValues({ ...formValues, content })}
+                modules={{
+                  toolbar: {
+                    container: "#toolbar",
+                    handlers: {
+                      image: handleImageUpload,
+                    },
+                  },
+                }}
+                style={{ marginBottom: '1rem' }}
               />
+              <CustomToolbar />
             </Grid>
             <Grid item xs={6}>
               <TextField
@@ -392,6 +492,36 @@ const ExpertDashboard = () => {
               >
                 <Marker position={{ lat: parseFloat(formValues.latitude) || center.lat, lng: parseFloat(formValues.longitude) || center.lng }} />
               </GoogleMap>
+            </Grid>
+            <Grid item xs={12}>
+            <FormControl fullWidth margin="normal">
+  <InputLabel id="category-label">Category</InputLabel>
+  <Select
+    labelId="category-label"
+    id="category"
+    value={formValues.category}
+    onChange={handleCategoryChange}
+    label="Category"
+  >
+    {categories.map((category, index) => (
+      <MenuItem key={index} value={category}>
+        {category}
+      </MenuItem>
+    ))}
+    <MenuItem value="new">Create New Category</MenuItem>
+  </Select>
+</FormControl>
+{formValues.category === 'new' && (
+  <TextField
+    margin="normal"
+    fullWidth
+    id="newCategory"
+    label="New Category"
+    name="newCategory"
+    value={newCategory}
+    onChange={handleNewCategoryChange}
+  />
+)}
             </Grid>
             <Grid item xs={12}>
               <label htmlFor="upload-images">

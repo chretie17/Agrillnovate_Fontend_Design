@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser, checkEmailExists } from '../services/api';
+import { registerUser, checkEmailExists, checkPhoneExists } from '../services/api';
 import {
   Container,
   TextField,
@@ -18,7 +18,8 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import PhoneIcon from '@mui/icons-material/Phone';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import HomeIcon from '@mui/icons-material/Home';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
@@ -46,6 +47,7 @@ const Signup = () => {
   const [address, setAddress] = useState('');
   const [role, setRole] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
 
   const navigate = useNavigate();
 
@@ -58,9 +60,17 @@ const Signup = () => {
     }
   };
 
+  const handlePhoneChange = async (phone) => {
+    setPhone(phone);
+    if (phone) {
+      const exists = await checkPhoneExists(phone);
+      setPhoneError(exists ? 'Phone number already exists' : '');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (emailError) return;
+    if (emailError || phoneError) return;
     const user = { name, email, password, phone, address, role };
     try {
       await registerUser(user);
@@ -138,21 +148,23 @@ const Signup = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="phone"
-                  label="Phone"
-                  name="phone"
-                  autoComplete="phone"
+                <PhoneInput
+                  country={'rw'}
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <PhoneIcon position="start" />
-                    ),
+                  onChange={handlePhoneChange}
+                  inputStyle={{
+                    width: '100%',
+                    paddingLeft: '48px', // Adjust padding to fit the phone icon
+                    height: '56px', // Adjust height to match other inputs
+                    boxSizing: 'border-box',
                   }}
+                  containerStyle={{ width: '100%' }}
                 />
+                {phoneError && (
+                  <Typography color="error" variant="caption">
+                    {phoneError}
+                  </Typography>
+                )}
               </Grid>
               <Grid item xs={12}>
                 <TextField

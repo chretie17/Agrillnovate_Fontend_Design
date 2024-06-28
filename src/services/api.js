@@ -42,7 +42,16 @@ export const checkEmailExists = async (email) => {
     throw error;
   }
 };
-
+export const checkPhoneExists = async (phone) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/users/check-phone_exists`, {
+      params: { phone }
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 // Add other API calls as needed
 
 export default api;

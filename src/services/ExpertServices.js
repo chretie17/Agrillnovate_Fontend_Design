@@ -62,13 +62,7 @@ export const getNotifications = async () => {
   }
 };
 
-export const updateResearchProject = async (id, formValues, newImages) => {
-  const formData = new FormData();
-  formData.append('research', new Blob([JSON.stringify(formValues)], { type: 'application/json' }));
-  if (newImages.length > 0) {
-    Array.from(newImages).forEach(file => formData.append('images', file));
-  }
-
+export const updateResearchProject = async (id, formData) => {
   try {
     const response = await axios.put(`${API_URL}/research/${id}`, formData, {
       headers: {
