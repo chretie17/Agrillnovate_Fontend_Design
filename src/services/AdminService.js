@@ -274,6 +274,36 @@ export const deleteInfographic = async (id) => {
   const response = await axios.delete(`${API_URL}/infographics/${id}`);
   return response.data;
 };
+export const getReport = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/reports`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching report:', error);
+    throw error;
+  }
+};
+// Get all experts
+export const getExperts = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/experts`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching experts:', error);
+    throw error;
+  }
+};
+
+// Get research by expert
+export const getResearchByExpert = async (expertId) => {
+  try {
+    const response = await axios.get(`${API_URL}/expert-research/${expertId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching research by expert:', error);
+    throw error;
+  }
+};
 
 export {
   setAuthToken,

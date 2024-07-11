@@ -10,10 +10,9 @@ import {
   getCommentsStats, getFeedbackStats, getCommentsByResearchId, getFeedbackByResearchId, createCategory
 } from '../services/ExpertServices';
 import { getCategories } from '../services/ResearchService';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { PieChart, Pie, Tooltip, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
 import { connectWebSocket, disconnectWebSocket } from '../services/WebSocketService';
-import useGoogleMapsLoader from '../hooks/useGoogleMapsLoader'; // Import the custom hook
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 
@@ -60,7 +59,10 @@ const ExpertDashboard = () => {
   const [newCategory, setNewCategory] = useState('');
   const quillRef = useRef(null); // Ref for Quill editor
 
-  const { isLoaded, loadError } = useGoogleMapsLoader(); // Use the custom hook
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg',
+    libraries: ['places']
+  });
 
   useEffect(() => {
     fetchResearchProjects();
@@ -182,21 +184,26 @@ const ExpertDashboard = () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
+    input.setAttribute('multiple', 'true');
     input.click();
 
     input.onchange = () => {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const quill = quillRef.current.getEditor();
-        let range = quill.getSelection();
-        if (!range) {
-          range = { index: quill.getLength() - 1 }; // Set range to the end if no selection
-        }
-        quill.insertEmbed(range.index, 'image', reader.result);
-      };
-      reader.readAsDataURL(file);
-      setNewImages((prevImages) => [...prevImages, file]);
+      const files = Array.from(input.files);
+      const readers = files.map(file => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const quill = quillRef.current.getEditor();
+          let range = quill.getSelection();
+          if (!range) {
+            range = { index: quill.getLength() - 1 }; // Set range to the end if no selection
+          }
+          quill.insertEmbed(range.index, 'image', reader.result);
+        };
+        reader.readAsDataURL(file);
+        return file;
+      });
+
+      setNewImages(prevImages => [...prevImages, ...files]);
     };
   };
 
@@ -213,20 +220,20 @@ const ExpertDashboard = () => {
       try {
         const formData = new FormData();
         const updatedFields = {};
-  
+
         if (formValues.title) updatedFields.title = formValues.title;
         if (formValues.author) updatedFields.author = formValues.author;
         if (formValues.content) updatedFields.content = formValues.content;
         if (formValues.latitude) updatedFields.latitude = formValues.latitude;
         if (formValues.longitude) updatedFields.longitude = formValues.longitude;
         updatedFields.category = formValues.category === 'new' ? newCategory : formValues.category;
-  
+
         formData.append('research', new Blob([JSON.stringify(updatedFields)], { type: 'application/json' }));
-  
+
         if (newImages.length > 0) {
           Array.from(newImages).forEach(file => formData.append('images', file));
         }
-  
+
         await updateResearchProject(selectedProject.researchID, formData);
         fetchResearchProjects();
         handleEditClose();
@@ -236,8 +243,6 @@ const ExpertDashboard = () => {
       }
     }
   };
-  
-  
 
   const validateForm = () => {
     const { latitude, longitude } = formValues;
@@ -251,7 +256,6 @@ const ExpertDashboard = () => {
     }
     return true;
   };
-  
 
   const handleDelete = async (id) => {
     try {
@@ -494,34 +498,34 @@ const ExpertDashboard = () => {
               </GoogleMap>
             </Grid>
             <Grid item xs={12}>
-            <FormControl fullWidth margin="normal">
-  <InputLabel id="category-label">Category</InputLabel>
-  <Select
-    labelId="category-label"
-    id="category"
-    value={formValues.category}
-    onChange={handleCategoryChange}
-    label="Category"
-  >
-    {categories.map((category, index) => (
-      <MenuItem key={index} value={category}>
-        {category}
-      </MenuItem>
-    ))}
-    <MenuItem value="new">Create New Category</MenuItem>
-  </Select>
-</FormControl>
-{formValues.category === 'new' && (
-  <TextField
-    margin="normal"
-    fullWidth
-    id="newCategory"
-    label="New Category"
-    name="newCategory"
-    value={newCategory}
-    onChange={handleNewCategoryChange}
-  />
-)}
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="category-label">Category</InputLabel>
+                <Select
+                  labelId="category-label"
+                  id="category"
+                  value={formValues.category}
+                  onChange={handleCategoryChange}
+                  label="Category"
+                >
+                  {categories.map((category, index) => (
+                    <MenuItem key={index} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                  <MenuItem value="new">Create New Category</MenuItem>
+                </Select>
+              </FormControl>
+              {formValues.category === 'new' && (
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="newCategory"
+                  label="New Category"
+                  name="newCategory"
+                  value={newCategory}
+                  onChange={handleNewCategoryChange}
+                />
+              )}
             </Grid>
             <Grid item xs={12}>
               <label htmlFor="upload-images">

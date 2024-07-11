@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaHome, FaUser, FaResearchgate, FaForumbee, FaChartPie, FaSignInAlt, FaUserPlus, FaBars } from 'react-icons/fa';
+import { FaHome, FaUser, FaResearchgate, FaForumbee, FaChartPie, FaSignInAlt, FaUserPlus, FaBars, FaFile } from 'react-icons/fa';
 import './Sidebar.css';
 import { connect } from '../services/WebSocketService';
 import { FaAddressCard } from 'react-icons/fa6';
@@ -59,6 +59,8 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
                   <li><Link to="/admin/AllCommentsAndFeedbacks" className="flex items-center"><FaChartPie className="mr-2" /><span>Manage Feedbacks and comments</span></Link></li>
                   <li><Link to="/admin/manage-pk" className="flex items-center"><FaAddressCard className="mr-2" /><span>Manage Public Knowledge</span></Link></li>
 <li><Link to="/admin/manage-infographics" className="flex items-center"><FaChartPie className="mr-2" /><span>Manage Infographics</span></Link></li>
+<li><Link to="/admin/report" className="flex items-center"><FaFile className="mr-2" /><span>Report</span></Link></li>
+<li><Link to="/admin/AdminExpertPage" className="flex items-center"><FaFile className="mr-2" /><span>Expert Report</span></Link></li>
 
 
                 </>

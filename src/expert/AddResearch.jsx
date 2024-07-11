@@ -274,7 +274,7 @@ const AddResearch = () => {
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               center={location || initialCenter}
-              zoom={8}
+              zoom={8}A
               onClick={handleMapClick}
             >
               <StandaloneSearchBox

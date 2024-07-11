@@ -5,6 +5,8 @@ import Navbar from './components/navbar';
 import Dashboard from './Dashboard/Dashboard';
 import AdminDashboard from './admin/AdminDashboard';
 import ManageUsers from './admin/ManageUsers';
+import AdminReport from './admin/Report';
+import AdminExpertReportPage from './admin/AdminExpertPage';
 import ManageResearch from './admin/ResearchTables/ManageResearch';
 import ManagePublicKnowledge from './admin/publicknowledge/ManagePublicKnowledge';
 import ManageInfographics from './admin/infographics/ManageInfographics';
@@ -35,7 +37,7 @@ import PublicKnowledge from './PublicPages/PublicKnowledge';
 import Infographics from './PublicPages/Infographics';
 import PublicKnowledgeDetail from './PublicPages/PubliKnowledgeDetail';
 import Footer from './components/Footer';
-import './App.css'; // Ensure you import your CSS
+import './App.css'; 
 
 const AppRouter = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -112,6 +114,10 @@ const AppRouter = () => {
                   <Route path="/admin/update-research/:id" element={<AdminUpdateResearch />} />
                   <Route path="/admin/manage-pk" element={<ManagePublicKnowledge />} />
                   <Route path="/admin/manage-infographics" element={<ManageInfographics />} />
+                  <Route path="/admin/report" element={<AdminReport />} />
+                  <Route path="/admin/AdminExpertPage" element={<AdminExpertReportPage />} />
+
+
                 </>
               )}
               {userRole === 'ROLE_EXPERT' && (

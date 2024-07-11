@@ -150,7 +150,7 @@ const ResearchDetail = () => {
               <Typography variant="h6" className="mb-4">
                 Location
               </Typography>
-              <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+              <LoadScript googleMapsApiKey="AIzaSyAwSoEbsNk6EWrGdcaLPUxyp2FPUJ5eBQg">
                 <GoogleMap
                   mapContainerStyle={{ height: '100%', width: '100%' }}
                   center={{ lat: research.latitude, lng: research.longitude }}
