@@ -35,6 +35,7 @@ import AdminUpdateResearch from './admin/ResearchTables/AdminUpdateResearch';
 import { setAuthToken } from './services/api';
 import PublicKnowledge from './PublicPages/PublicKnowledge';
 import Infographics from './PublicPages/Infographics';
+import UserProfile from './profile/UserProfile';
 import PublicKnowledgeDetail from './PublicPages/PubliKnowledgeDetail';
 import Footer from './components/Footer';
 import './App.css'; 
@@ -128,10 +129,15 @@ const AppRouter = () => {
                   <Route path="/expert/manage-my-research" element={<ManageMyResearch />} />
                 </>
               )}
-              {userRole === 'ROLE_FARMER' && <Route path="/farmer-dashboard" element={<FarmerDashboard />} />}
+              {userRole === 'ROLE_FARMER' && 
+              <Route path="/farmer-dashboard" element={<FarmerDashboard />}
+              
+               />}
               {userRole === 'ROLE_COMMUNITYMEMBER' && <Route path="/community-dashboard" element={<CommunityDashboard />} />}
               <Route path="/notifications" element={<NotificationsPopup />} />
               <Route path="/feedback" element={<Feedback />} />
+              <Route path="/profile" element={<UserProfile />} />
+
               <Route path="*" element={<Navigate to="/home" />} />
             </>
           ) : (

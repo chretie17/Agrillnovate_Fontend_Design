@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaHome, FaUser, FaResearchgate, FaForumbee, FaChartPie, FaSignInAlt, FaUserPlus, FaBars, FaFile } from 'react-icons/fa';
 import './Sidebar.css';
 import { connect } from '../services/WebSocketService';
-import { FaAddressCard } from 'react-icons/fa6';
+import { FaAddressCard, FaPersonRifle } from 'react-icons/fa6';
 
 const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
   const [localUserRole, setLocalUserRole] = useState(userRole);
@@ -70,6 +70,7 @@ const Sidebar = ({ userRole, isAuthenticated, onLogout, userName }) => {
                   <li><Link to="/expert-dashboard" className="flex items-center"><FaResearchgate className="mr-2" /><span>Dashboard</span></Link></li>
                   <li><Link to="/expert/add-research" className="flex items-center"><FaResearchgate className="mr-2" /><span>Publish Your Research</span></Link></li>
                   <li><Link to="/forums" className="flex items-center"><FaResearchgate className="mr-2" /><span>Forums</span></Link></li>
+                  <li><Link to="/profile" className="flex items-center"><FaPersonRifle className="mr-2" /><span>Profile</span></Link></li>
 
                 </>
               )}

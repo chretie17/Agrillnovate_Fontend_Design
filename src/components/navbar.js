@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaSignOutAlt, FaUserCircle, FaBars, FaTimes } from 'react-icons/fa';
 import "./Navbar.css";
@@ -18,6 +18,14 @@ function NavBar({ userName, onLogout }) {
             <CodeIcon />
           </span>
         </NavLink>
+
+        <div className="nav-icon" onClick={handleClick}>
+          {click ? (
+            <FaTimes className="icon" />
+          ) : (
+            <FaBars className="icon" />
+          )}
+        </div>
 
         <ul className={click ? "nav-menu active" : "nav-menu"}>
           <li className="nav-item">
@@ -75,47 +83,42 @@ function NavBar({ userName, onLogout }) {
               Infographics
             </NavLink>
           </li>
+        </ul>
+        <div className="user-actions">
           {userName ? (
             <>
-              <li className="nav-item">
-                <span className="user-info"><FaUserCircle /> {userName}</span>
-              </li>
-              <li className="nav-item">
-                <button onClick={onLogout} className="logout-button"><FaSignOutAlt /> Logout</button>
-              </li>
+              <NavLink
+                exact
+                to="/Profile"
+                activeClassName="active"
+                className="nav-links user-info"
+                onClick={handleClick}
+              >
+                <FaUserCircle /> {userName}
+              </NavLink>
+              <button onClick={onLogout} className="logout-button"><FaSignOutAlt /> Logout</button>
             </>
           ) : (
             <>
-              <li className="nav-item">
-                <NavLink
-                  exact
-                  to="/login"
-                  activeClassName="active"
-                  className="nav-links"
-                  onClick={handleClick}
-                >
-                  Login
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  exact
-                  to="/signup"
-                  activeClassName="active"
-                  className="nav-links"
-                  onClick={handleClick}
-                >
-                  Signup
-                </NavLink>
-              </li>
+              <NavLink
+                exact
+                to="/login"
+                activeClassName="active"
+                className="nav-links"
+                onClick={handleClick}
+              >
+                Login
+              </NavLink>
+              <NavLink
+                exact
+                to="/signup"
+                activeClassName="active"
+                className="nav-links"
+                onClick={handleClick}
+              >
+                Signup
+              </NavLink>
             </>
-          )}
-        </ul>
-        <div className="nav-icon" onClick={handleClick}>
-          {click ? (
-            <FaTimes className="icon" />
-          ) : (
-            <FaBars className="icon" />
           )}
         </div>
       </div>
