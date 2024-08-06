@@ -15,6 +15,7 @@ import {
   InputLabel,
   Select,
   Grid,
+  Alert,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -24,6 +25,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import SchoolIcon from '@mui/icons-material/School';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const theme = createTheme({
   typography: {
@@ -46,6 +49,8 @@ const Signup = () => {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [role, setRole] = useState('');
+  const [educationBackground, setEducationBackground] = useState('');
+  const [cvFile, setCvFile] = useState(null);
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
 
@@ -71,9 +76,21 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (emailError || phoneError) return;
-    const user = { name, email, password, phone, address, role };
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('phone', phone);
+    formData.append('address', address);
+    formData.append('role', role);
+    if (role === 'EXPERT') {
+      formData.append('educationBackground', educationBackground);
+      formData.append('cv', cvFile);
+    }
+
     try {
-      await registerUser(user);
+      await registerUser(formData);
       navigate('/login');
     } catch (error) {
       console.error('Error registering user', error);
@@ -154,8 +171,8 @@ const Signup = () => {
                   onChange={handlePhoneChange}
                   inputStyle={{
                     width: '100%',
-                    paddingLeft: '48px', // Adjust padding to fit the phone icon
-                    height: '56px', // Adjust height to match other inputs
+                    paddingLeft: '48px',
+                    height: '56px',
                     boxSizing: 'border-box',
                   }}
                   containerStyle={{ width: '100%' }}
@@ -202,6 +219,49 @@ const Signup = () => {
                   </Select>
                 </FormControl>
               </Grid>
+              {role === 'EXPERT' && (
+                <>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      id="educationBackground"
+                      label="Education Background"
+                      name="educationBackground"
+                      value={educationBackground}
+                      onChange={(e) => setEducationBackground(e.target.value)}
+                      InputProps={{
+                        startAdornment: (
+                          <SchoolIcon position="start" />
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <input
+                      accept=".pdf,.doc,.docx"
+                      id="cvFile"
+                      type="file"
+                      onChange={(e) => setCvFile(e.target.files[0])}
+                      style={{ display: 'none' }}
+                    />
+                    <label htmlFor="cvFile">
+                      <Button
+                        variant="contained"
+                        component="span"
+                        startIcon={<CloudUploadIcon />}
+                        sx={{ mt: 2, width: '100%' }}
+                      >
+                        Upload CV
+                      </Button>
+                    </label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Alert severity="info" sx={{ mt: 2 }}>
+                      Your account needs to be approved by an admin before you can log in. You will be notified once approved.
+                    </Alert>
+                  </Grid>
+                </>
+              )}
             </Grid>
             <Button
               type="submit"

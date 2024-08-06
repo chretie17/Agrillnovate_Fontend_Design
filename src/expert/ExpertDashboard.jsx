@@ -358,41 +358,32 @@ const ExpertDashboard = () => {
             </List>
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Paper elevation={3} sx={{ padding: 2 }}>
-            <Typography variant="h6">Comments Overview</Typography>
-            <BarChart width={500} height={300} data={commentsStats}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="researchTitle" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="commentCount" fill="#8884d8" />
-            </BarChart>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Paper elevation={3} sx={{ padding: 2 }}>
-            <Typography variant="h6">Feedback Overview</Typography>
-            <PieChart width={500} height={300}>
-              <Pie
-                data={feedbackStats}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="count"
-              >
-                {feedbackStats.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </Paper>
-        </Grid>
+        <Grid item xs={12}>
+      <Paper elevation={3} sx={{ padding: 4, backgroundColor: '#f9f9f9' }}>
+        <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+          Comments Overview
+        </Typography>
+        <BarChart
+          width={1000}
+          height={400}
+          data={commentsStats}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+          <XAxis dataKey="researchTitle" tick={{ fill: '#333' }} />
+          <YAxis tick={{ fill: '#333' }} />
+          <Tooltip
+            contentStyle={{ backgroundColor: '#333', color: '#fff', borderRadius: '5px' }}
+            itemStyle={{ color: '#fff' }}
+            cursor={{ fill: 'rgba(255, 255, 255, 0.1)' }}
+          />
+          <Legend verticalAlign="top" align="right" wrapperStyle={{ top: 0 }} />
+          <Bar dataKey="commentCount" fill="#82ca9d" barSize={40} radius={[10, 10, 0, 0]} />
+        </BarChart>
+      </Paper>
+    </Grid>
+  
+        
         <Grid item xs={12}>
           <Paper elevation={3} sx={{ padding: 2 }}>
             <Typography variant="h6">Comments on My Research</Typography>

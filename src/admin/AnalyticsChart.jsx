@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-    BarChart, Bar, PieChart, Pie, Cell
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  BarChart, Bar, PieChart, Pie, Cell
 } from 'recharts';
 import { Grid, Typography, useTheme } from '@mui/material';
 import { getUsers, getResearch, getThreads } from '../services/AdminService';
+
 
 const AnalyticsChart = () => {
     const [usersData, setUsersData] = useState([]);

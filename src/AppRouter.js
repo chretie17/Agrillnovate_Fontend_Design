@@ -9,6 +9,7 @@ import AdminReport from './admin/Report';
 import AdminExpertReportPage from './admin/AdminExpertPage';
 import ManageResearch from './admin/ResearchTables/ManageResearch';
 import ManagePublicKnowledge from './admin/publicknowledge/ManagePublicKnowledge';
+import FeedbackandCommentsReport from './admin/FeedbackandCommentReport';
 import ManageInfographics from './admin/infographics/ManageInfographics';
 import ManageForums from './admin/ManageForums';
 import Managenotifications from './admin/AdminNotifications';
@@ -117,6 +118,7 @@ const AppRouter = () => {
                   <Route path="/admin/manage-infographics" element={<ManageInfographics />} />
                   <Route path="/admin/report" element={<AdminReport />} />
                   <Route path="/admin/AdminExpertPage" element={<AdminExpertReportPage />} />
+                  <Route path="/admin/FeedbackandCommentReport" element={<FeedbackandCommentsReport />} />
 
 
                 </>

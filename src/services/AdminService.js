@@ -21,7 +21,24 @@ const getUsers = async () => {
     throw error;
   }
 };
-
+export const approveUser = async (id) => {
+  try {
+    const response = await axios.post(`${API_URL}/approve/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error approving user:', error);
+    throw error;
+  }
+};
+export const disableUser = async (id) => {
+  try {
+    const response = await axios.post(`${API_URL}/disable/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error approving user:', error);
+    throw error;
+  }
+};
 // Create a new user
 const createUser = async (user) => {
   try {

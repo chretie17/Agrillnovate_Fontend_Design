@@ -86,6 +86,19 @@ const AdminDashboard = () => {
     };
 
     fetchData();
+
+    // Set up interval to fetch notifications every second
+    const intervalId = setInterval(async () => {
+      try {
+        const notificationsData = await getNotifications();
+        setNotifications(notificationsData);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    }, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleNotificationClick = (event) => {

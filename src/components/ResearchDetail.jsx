@@ -4,10 +4,9 @@ import { getResearchById } from '../services/PublicServices';
 import { createComment, createFeedback, getCommentsByResearchID } from '../services/FeedbackService';
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 import {
-  Drawer, Button, TextField, Typography, Paper, Grid, Avatar, Container, Snackbar, Alert, Fab, Tooltip,
+  Drawer, Button, TextField, Typography, Paper, Grid, Avatar, Container, Snackbar, Alert,
 } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
-import '../index.css';
+import '../index.css'; // Assuming you have Tailwind CSS imported here
 
 const ResearchDetail = () => {
   const { id } = useParams();
@@ -120,7 +119,7 @@ const ResearchDetail = () => {
   };
 
   return (
-    <Container className="pt-8 pb-8">
+    <Container className="pt-8 pb-8 relative">
       {research ? (
         <>
           <Paper className="p-6 mb-8">
@@ -231,16 +230,14 @@ const ResearchDetail = () => {
               </Button>
             </div>
           </Paper>
-          <Tooltip title="Submit Feedback" aria-label="submit feedback">
-            <Fab
-              color="secondary"
-              aria-label="add"
-              onClick={() => setFeedbackDrawerOpen(true)}
-              className="fixed right-5 bottom-5"
-            >
-              <AddIcon />
-            </Fab>
-          </Tooltip>
+          <Button
+            variant="contained"
+            color="secondary"
+            className="fixed top-1/3 right-5 transform hover:scale-105 transition-transform animate-bounce"
+            onClick={() => setFeedbackDrawerOpen(true)}
+          >
+            Give Feedback
+          </Button>
           <Drawer
             anchor="right"
             open={feedbackDrawerOpen}
